@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://debug-lixiwen.github.io/"/>
-  <updated>2020-04-24T20:35:32.000Z</updated>
+  <updated>2021-07-13T07:57:00.978Z</updated>
   <id>https://debug-lixiwen.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>test</title>
+    <link href="https://debug-lixiwen.github.io/2021/07/13/test/"/>
+    <id>https://debug-lixiwen.github.io/2021/07/13/test/</id>
+    <published>2021-07-13T07:55:21.000Z</published>
+    <updated>2021-07-13T07:57:00.978Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-参考文章&quot;&gt;&lt;a href=&quot;#1-参考文章&quot; class=&quot;headerlink&quot; title=&quot;1 参考文章&quot;&gt;&lt;/a&gt;1 参考文章&lt;/h1&gt;&lt;h2 id=&quot;1-1-闪烁之狐的博客&quot;&gt;&lt;a href=&quot;#1-1-闪烁之狐的博客&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Hexo" scheme="https://debug-lixiwen.github.io/categories/Hexo/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Hexo结合matery主题搭建博客总结</title>
