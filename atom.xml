@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://debug-lixiwen.github.io/"/>
-  <updated>2021-07-14T03:29:27.341Z</updated>
+  <updated>2021-07-14T05:45:45.067Z</updated>
   <id>https://debug-lixiwen.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://debug-lixiwen.github.io/2021/07/14/goland-pei-zhi-xuan-zhong-bian-liang-yan-se/"/>
     <id>https://debug-lixiwen.github.io/2021/07/14/goland-pei-zhi-xuan-zhong-bian-liang-yan-se/</id>
     <published>2021-07-14T03:08:41.000Z</published>
-    <updated>2021-07-14T03:29:27.341Z</updated>
+    <updated>2021-07-14T05:45:45.067Z</updated>
     
     <summary type="html">
     
@@ -29,7 +29,8 @@
       
         
         
-          &lt;img src=&quot;/2021/07/14/goland-pei-zhi-xuan-zhong-bian-liang-yan-se/identifier_config.png&quot; class
+          &lt;h2 id=&quot;设置选中变量颜色&quot;&gt;&lt;a href=&quot;#设置选中变量颜色&quot; class=&quot;headerlink&quot; title=&quot;设置选中变量颜色&quot;&gt;&lt;/a&gt;设置选中变量颜色&lt;/h2&gt;&lt;p&gt;相同名字的也会变颜色&lt;/p&gt;
+&lt;p&gt;&lt;img
         
       
     
@@ -42,36 +43,11 @@
   </entry>
   
   <entry>
-    <title>test</title>
-    <link href="https://debug-lixiwen.github.io/2021/07/13/test/"/>
-    <id>https://debug-lixiwen.github.io/2021/07/13/test/</id>
-    <published>2021-07-13T07:55:21.000Z</published>
-    <updated>2021-07-14T03:29:53.795Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;1-参考文章&quot;&gt;&lt;a href=&quot;#1-参考文章&quot; class=&quot;headerlink&quot; title=&quot;1 参考文章&quot;&gt;&lt;/a&gt;1 参考文章&lt;/h1&gt;&lt;h2 id=&quot;1-1-闪烁之狐的博客&quot;&gt;&lt;a href=&quot;#1-1-闪烁之狐的博客&quot;
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Hexo" scheme="https://debug-lixiwen.github.io/categories/Hexo/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>Hexo结合matery主题搭建博客总结</title>
     <link href="https://debug-lixiwen.github.io/2020/04/24/hexo-jie-he-matery-zhu-ti-da-jian-bo-ke-zong-jie/"/>
     <id>https://debug-lixiwen.github.io/2020/04/24/hexo-jie-he-matery-zhu-ti-da-jian-bo-ke-zong-jie/</id>
     <published>2020-04-24T04:29:10.000Z</published>
-    <updated>2020-04-24T20:35:32.000Z</updated>
+    <updated>2021-07-14T05:34:25.472Z</updated>
     
     <summary type="html">
     
