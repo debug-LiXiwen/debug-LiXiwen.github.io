@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://debug-lixiwen.github.io/"/>
-  <updated>2021-08-01T14:55:07.866Z</updated>
+  <updated>2021-08-01T14:55:51.568Z</updated>
   <id>https://debug-lixiwen.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>golang单元测试攻略</title>
+    <link href="https://debug-lixiwen.github.io/2021/07/21/golang-dan-yuan-ce-shi/"/>
+    <id>https://debug-lixiwen.github.io/2021/07/21/golang-dan-yuan-ce-shi/</id>
+    <published>2021-07-21T02:51:39.000Z</published>
+    <updated>2021-08-01T14:55:51.568Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-Go测试的分类&quot;&gt;&lt;a href=&quot;#1-Go测试的分类&quot; class=&quot;headerlink&quot; title=&quot;1 Go测试的分类&quot;&gt;&lt;/a&gt;1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="单元测试" scheme="https://debug-lixiwen.github.io/categories/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"/>
+    
+    
+      <category term="单元测试" scheme="https://debug-lixiwen.github.io/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"/>
+    
+      <category term="golfing" scheme="https://debug-lixiwen.github.io/tags/golfing/"/>
+    
+  </entry>
   
   <entry>
     <title>golang的pprof与火焰图实战</title>
