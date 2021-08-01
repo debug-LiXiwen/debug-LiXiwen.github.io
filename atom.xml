@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://debug-lixiwen.github.io/"/>
-  <updated>2021-07-14T05:45:45.067Z</updated>
+  <updated>2021-08-01T14:52:06.496Z</updated>
   <id>https://debug-lixiwen.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>golang的pprof与火焰图实战</title>
+    <link href="https://debug-lixiwen.github.io/2021/07/18/shi-zhan/"/>
+    <id>https://debug-lixiwen.github.io/2021/07/18/shi-zhan/</id>
+    <published>2021-07-18T02:21:53.000Z</published>
+    <updated>2021-08-01T14:52:06.496Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-前言&quot;&gt;&lt;a href=&quot;#1-前言&quot; class=&quot;headerlink&quot; title=&quot;1 前言&quot;&gt;&lt;/a&gt;1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="golang" scheme="https://debug-lixiwen.github.io/categories/golang/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Goland配置选中变量颜色</title>

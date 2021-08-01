@@ -1,0 +1,2535 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="golang的pprof与火焰图实战, Wish 后端开发">
+    <meta name="description" content="成功总是来之不易，坚持最为可贵">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>golang的pprof与火焰图实战 | wish</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="wish" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">wish</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于我</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">wish</div>
+        <div class="logo-desc">
+            
+            成功总是来之不易，坚持最为可贵
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于我
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/debug-LiXiwen" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/debug-LiXiwen" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">golang的pprof与火焰图实战</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/golang/" class="post-category">
+                                golang
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-07-18
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-08-01
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    9.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    39 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h1><p><strong>声明：</strong>本文参考这篇文章，自己跟着做了一遍，记录一下，然后补充了火焰图的使用。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.wolfogre.com/posts/go-ppof-practice/">https://blog.wolfogre.com/posts/go-ppof-practice/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.liwenzhou.com/posts/Go/performance_optimisation/#autoid-1-5-2">https://www.liwenzhou.com/posts/Go/performance_optimisation/#autoid-1-5-2</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.wolfogre.com/posts/go-ppof-practice/">https://blog.wolfogre.com/posts/go-ppof-practice/</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wolfogre/blog-utterances/issues/39">https://github.com/wolfogre/blog-utterances/issues/39</a></p>
+<p><a target="_blank" rel="noopener" href="https://golang2.eddycjy.com/posts/ch6/01-pprof-1/">https://golang2.eddycjy.com/posts/ch6/01-pprof-1/</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/eddycjy/blog">https://github.com/eddycjy/blog</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph/blob/master/README.md">https://github.com/brendangregg/FlameGraph/blob/master/README.md</a></p>
+<p><a target="_blank" rel="noopener" href="https://colobu.com/2017/03/02/a-short-survey-of-golang-pprof/">[鸟窝]-[译] Go 可视化性能分析工具</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiujuan/p/14604609.html">https://www.cnblogs.com/jiujuan/p/14604609.html</a></p>
+<p>代码开发上线步骤</p>
+<ol>
+<li><p>上线前</p>
+<p>a. 压测：我们通过压测可以获知系统的性能，例如每秒能处理的请求数，平均响应时间，错误率等指标。这样，我们对自己服务的性能算是有个底。</p>
+<p>b. 问题：但是压测是线下的模拟流量，如果到了线上呢？会遇到高并发、大流量，不靠谱的上下游，突发的尖峰流量等等场景，这些都是不可预知的。</p>
+</li>
+<li><p>上线后</p>
+<ol>
+<li>线上突然大量报警，接口超时，错误数增加</li>
+<li>终极解决方案：<code>看日志</code>、<code>看监控</code>；<code>使用性能分析工具</code>分析程序的性能，找到瓶颈</li>
+<li>临时解决方案：首先要<code>降级、限流、回滚</code>，先止损</li>
+</ol>
+</li>
+<li><p>总结</p>
+<ol>
+<li>性能分析很重要，尤其是要统计好性能数据，出问题了，可以随时拿出来看。</li>
+</ol>
+</li>
+</ol>
+<p>根据上面内容引出了性能分析，性能分析主要关注 <code>CPU、内存、磁盘 IO、网络</code>这些指标。</p>
+<p>在软件工程中，性能分析（performance analysis，也称为 profiling），是以收集程序运行时信息为手段研究程序行为的分析方法，是一种动态程序分析的方法。</p>
+<p><code>profiling</code> 是指在程序执行过程中，收集能够反映程序执行状态的数据。</p>
+<p><code>一般常规分析内容：</code></p>
+<ol>
+<li><strong>cpu</strong>：程序对cpu的使用情况 - 使用时长，占比等</li>
+<li><strong>内存</strong>：程序对cpu的使用情况 - 使用时长，占比，内存泄露等。如果在往里分，程序堆、栈使用情况</li>
+<li><strong>I/O</strong>：IO的使用情况 - 哪个程序IO占用时间比较长</li>
+</ol>
+<p><code>golang 程序中分析内容：</code></p>
+<ol>
+<li><strong>goroutine</strong>：go的协程使用情况，调用链的情况</li>
+<li><strong>goroutine leak</strong>：goroutine泄露检查</li>
+<li><strong>go dead lock</strong>：死锁的检测分析</li>
+<li><strong>data race detector</strong>：数据竞争分析，其实也与死锁分析有关</li>
+</ol>
+<h2 id="1-2-golang-性能调试优化方法"><a href="#1-2-golang-性能调试优化方法" class="headerlink" title="1.2 golang 性能调试优化方法"></a>1.2 golang 性能调试优化方法</h2><p>比如 linux 中 cpu 性能调试，工具有 top，dstat，perf 等。</p>
+<p>那么在 golang 中，有哪些分析方法？</p>
+<p><strong>golang 性能调试优化方法：</strong></p>
+<ul>
+<li><strong>Benchmark</strong>：<strong>基准测试</strong>，对特定代码的运行时间和内存信息等进行测试</li>
+<li><strong>Profiling</strong>：<strong>程序分析</strong>，程序的运行画像，在程序执行期间，通过采样收集的数据对程序进行分析</li>
+<li><strong>Trace</strong>：<strong>跟踪</strong>，在程序执行期间，通过采集发生的事件数据对程序进行分析</li>
+</ul>
+<blockquote>
+<p>profiling 和 trace 有啥区别？<br>profiling 分析没有时间线，trace 分析有时间线。</p>
+</blockquote>
+<p>在 golang 中，<code>应用方法的工具</code>呢？</p>
+<p>这里介绍 pprof 这个 golang 工具，它可以帮助我们调试优化程序。</p>
+<blockquote>
+<p>它的最原始程序是 <a target="_blank" rel="noopener" href="https://github.com/gperftools/gperftools">gperftools</a> - <a target="_blank" rel="noopener" href="https://github.com/gperftools/gperftools，golang">https://github.com/gperftools/gperftools，golang</a> 的 pprof 是从它而来的。</p>
+</blockquote>
+<h1 id="2-pprof-是什么"><a href="#2-pprof-是什么" class="headerlink" title="2 pprof 是什么"></a>2 pprof 是什么</h1><p>在 Go 语言中，pprof 是用于可视化和分析性能分析数据的工具，pprof 以 profile.proto 读取分析样本的集合，并生成报告以可视化并帮助分析数据（支持文本和图形报告）。</p>
+<p>而刚刚提到的 profile.proto 是一个 Protobuf v3 的描述文件，它描述了一组 callstack 和 symbolization 信息， 作用是统计分析的一组采样的调用栈，是很常见的 stacktrace 配置文件格式。</p>
+<blockquote>
+<p><strong>一句话描述</strong>：Golang<strong>自带</strong>的一款开箱即用的<strong>性能监控</strong>和<strong>分析</strong>工具。</p>
+</blockquote>
+<h1 id="3-pprof-作用"><a href="#3-pprof-作用" class="headerlink" title="3 pprof 作用"></a>3 pprof 作用</h1><p><img src="/2021/07/18/shi-zhan/image-20210725221402477.png" alt="pprof 作用"></p>
+<h2 id="3-1-pprof指标采样的维度"><a href="#3-1-pprof指标采样的维度" class="headerlink" title="3.1 pprof指标采样的维度"></a>3.1 pprof指标采样的维度</h2><ol>
+<li>CPU（profile）<ol>
+<li>CPU Profiling：CPU 分析，按照一定的频率采集所监听的应用程序 CPU（含寄存器）的使用情况，可确定应用程序在主动消耗 CPU 周期时花费时间的位置。</li>
+<li>报告CPU的使用情况，定位到热点（消耗CPU周期最多的）代码。默认情况下Go以100HZ的频率进行CPU采样</li>
+</ol>
+</li>
+<li>Goroutine<ol>
+<li>Goroutine Profiling： Goroutine 分析，可以对当前应用程序正在运行的 Goroutine 进行堆栈跟踪和分析。这项功能在实际排查中会经常用到，因为很多问题出现时的表象就是 Goroutine 暴增，而这时候我们要做的事情之一就是查看应用程序中的 Goroutine 正在做什么事情，因为什么阻塞了，然后再进行下一步。</li>
+</ol>
+</li>
+<li>系统线程<ol>
+<li>获取导致创建 OS 线程的 goroutine 堆栈</li>
+</ol>
+</li>
+<li>堆内存/内存剖析（heap）<ol>
+<li>Memory Profiling：内存分析，在应用程序进行堆分配时记录堆栈跟踪，用于监视当前和历史内存使用情况，以及检查内存泄漏。</li>
+<li>包含每个 goroutine 分配大小，分配堆栈等。</li>
+<li>每分配 runtime.MemProfileRate(默认为512K) 个字节进行一次数据采样。</li>
+</ol>
+</li>
+<li>内存剖析（allocs）：报告所有内存分配历史</li>
+<li>阻塞操作<ol>
+<li>Block Profiling：阻塞分析，记录 Goroutine 阻塞等待同步（包括定时器通道）的位置，默认不开启，需要调用 <code>runtime.SetBlockProfileRate</code> 进行设置。</li>
+<li>获取导致阻塞的 goroutine 堆栈(如 channel, mutex 等)，使用前需要先调用 <code>runtime.SetBlockProfileRate</code></li>
+</ol>
+</li>
+<li>锁竞争<ol>
+<li>Mutex Profiling：互斥锁分析，报告互斥锁的竞争情况，默认不开启，需要调用 <code>runtime.SetMutexProfileFraction</code> 进行设置。</li>
+</ol>
+</li>
+<li>执行追踪（trace）：追踪当前应用程序的执行栈</li>
+</ol>
+<h3 id="CPU采样"><a href="#CPU采样" class="headerlink" title="CPU采样"></a>CPU采样</h3><p>采样对象：函数调用和它们的占用时间</p>
+<p>采样率：100次/秒</p>
+<p>固定值采样时间：从手动启动到手动结束</p>
+<ul>
+<li>操作系统：每10ms向进程发送一次SIGPROF信号</li>
+<li>进程：每次接收到SIGPROF会记录调用栈</li>
+<li>写缓冲：每100ms读取一次已经记录的调用栈并写入输出流</li>
+</ul>
+<img src="/2021/07/18/shi-zhan/image-20210801222450112.png" alt="image-20210801222450112" style="zoom:50%;">
+
+<img src="/2021/07/18/shi-zhan/image-20210801222823463.png" alt="image-20210801222823463" style="zoom: 33%;">
+
+
+
+
+
+<h3 id="Goroutine-amp-ThreadCreate采样"><a href="#Goroutine-amp-ThreadCreate采样" class="headerlink" title="Goroutine &amp; ThreadCreate采样"></a>Goroutine &amp; ThreadCreate采样</h3><p>Goroutine：记录所有用户发起且在运行中的goroutine（即入口非runtime开头的）和runtime.main的调用栈信息</p>
+<p>ThreadCreate：记录程序创建的所有系统线程的信息</p>
+<img src="/2021/07/18/shi-zhan/goroutine&tc.png">
+
+
+
+
+
+<h3 id="Heap（堆内存）采样"><a href="#Heap（堆内存）采样" class="headerlink" title="Heap（堆内存）采样"></a>Heap（堆内存）采样</h3><p>采样程序通过内存分配器在<code>堆上</code>分配和释放的内存，记录分配/释放的<code>大小和数量</code></p>
+<p>采样率：每分配512KB记录一次，可在运行开头修改，1为每次分配均记录</p>
+<p>采样时间：从程序运行开始到采样时</p>
+<p>采样指标：alloc_space, alloc_objects, inuse_space, inuse_objects</p>
+<p>计算方式：inuse=alloc-free</p>
+<h3 id="Block-阻塞-amp-Mutex-锁竞争-采样"><a href="#Block-阻塞-amp-Mutex-锁竞争-采样" class="headerlink" title="Block(阻塞) &amp; Mutex(锁竞争)采样"></a>Block(阻塞) &amp; Mutex(锁竞争)采样</h3><p>阻塞操作</p>
+<p>采样阻塞操作的次数和耗时</p>
+<p>采样率：阻塞耗时超过阈值的才会被记录，1为每次阻塞均记录</p>
+<p>锁竞争</p>
+<p>采样争抢锁的次数和耗时</p>
+<p>采样率：只记录固定比例的锁操作，1为每次加锁均记录</p>
+<p><img src="/2021/07/18/shi-zhan/image-20210801224628156.png" alt></p>
+<h1 id="4-pprof-使用模式"><a href="#4-pprof-使用模式" class="headerlink" title="4 pprof 使用模式"></a>4 pprof 使用模式</h1><ul>
+<li>Report generation：报告生成</li>
+<li>Interactive terminal use：交互式终端</li>
+<li>Web interface：Web 界面</li>
+</ul>
+<h1 id="5-采样方式"><a href="#5-采样方式" class="headerlink" title="5 采样方式"></a>5 采样方式</h1><table>
+<thead>
+<tr>
+<th align="center">方式名称</th>
+<th>如何使用</th>
+<th>优点</th>
+<th>缺点</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">runtime/pprof</td>
+<td>手动调用【runtime.StartCPUProfile、runtime.StopCPUProfile】等<strong>API</strong>来进行数据的采集。采集程序（非 Server）的指定区块的运行数据进行分析。</td>
+<td><strong>灵活性高</strong>、按需采集。</td>
+<td></td>
+<td><strong>工具型应用</strong>（比如说定制化的分析小工具、集成到公司监控系统）。这种应用运行一段时间就结束。</td>
+</tr>
+<tr>
+<td align="center">net/http/pprof</td>
+<td>通过<strong>http</strong>服务来获取Profile采样文件。 <code>import _ &quot;net/http/pprof&quot;</code>。基于 HTTP Server 运行，并且可以采集运行时数据进行分析。<code>net/http/pprof中只是使用runtime/pprof包来进行封装了一下，并在http端口上暴露出来</code></td>
+<td><strong>简单易用</strong></td>
+<td></td>
+<td>在线服务（一直运行着的程序）</td>
+</tr>
+<tr>
+<td align="center">go test</td>
+<td>通过命令<code>go test -bench . -cpuprofile cpu.prof</code>来进行采集数据。</td>
+<td><strong>针对性强</strong>、细化到函数</td>
+<td></td>
+<td>进行某函数的性能测试</td>
+</tr>
+</tbody></table>
+<p>上面的 pprof 开启后，每隔一段时间就会采集当前程序的堆栈信息，获取函数的 cpu、内存等使用情况。通过对采样的数据进行分析，形成一个数据分析报告。</p>
+<p>pprof 以 <a target="_blank" rel="noopener" href="https://github.com/google/pprof/blob/master/proto/profile.proto">profile.proto</a> 的格式保存数据，然后根据这个数据可以生成可视化的分析报告，支持文本形式和图形形式报告。<br>profile.proto 里具体的数据格式是 <a target="_blank" rel="noopener" href="https://developers.google.com/protocol-buffers">protocol buffers</a>。</p>
+<p>那用什么方法来对数据进行分析，从而形成文本或图形报告？</p>
+<p>用一个命令行工具 <code>go tool pprof</code> 。</p>
+<h2 id="5-1-go-test"><a href="#5-1-go-test" class="headerlink" title="5.1 go test"></a>5.1 go test</h2><ul>
+<li>cpu 使用分析：-cpuprofile=cpu.pprof</li>
+<li>内存使用分析：-benchmem -memprofile=mem.pprof</li>
+<li>block分析：-blockprofile=block.pprof</li>
+</ul>
+<p>运行命令采样数据：</p>
+<pre class="line-numbers language-sh"><code class="language-sh">
+go test -bench=. -run=none -benchmem -memprofile=mem.pprof
+
+go test -bench=. -run=none -blockprofile=block.pprof
+
+go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
+
+go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof -blockprofile=block.pprof
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="5-2-runtime-pprof"><a href="#5-2-runtime-pprof" class="headerlink" title="5.2 runtime/pprof"></a>5.2 runtime/pprof</h2><p>除了注入 http handler 和 go test 以外，我们还可以在程序中通过 pprof 所提供的 Lookup 方法来进行相关内容的采集和调用，其一共支持六种类型，分别是：goroutine、threadcreate、heap、block、mutex，代码如下：</p>
+<p>除了注入 http handler 和 go test 以外，我们还可以在程序中通过 pprof 所提供的 Lookup 方法来进行相关内容的采集和调用，其一共支持六种类型，分别是：goroutine、threadcreate、heap、block、mutex，代码如下：</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">type</span> LookupType <span class="token builtin">int8</span>
+
+<span class="token keyword">const</span> <span class="token punctuation">(</span>
+    LookupGoroutine LookupType <span class="token operator">=</span> <span class="token boolean">iota</span>
+    LookupThreadcreate
+    LookupHeap
+    LookupAllocs
+    LookupBlock
+    LookupMutex
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>lookupType LookupType<span class="token punctuation">,</span> w io<span class="token punctuation">.</span>Writer<span class="token punctuation">)</span> <span class="token builtin">error</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> err <span class="token builtin">error</span>
+    <span class="token keyword">switch</span> lookupType <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">case</span> LookupGoroutine<span class="token punctuation">:</span>
+        p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"goroutine"</span><span class="token punctuation">)</span>
+        err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">case</span> LookupThreadcreate<span class="token punctuation">:</span>
+        p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"threadcreate"</span><span class="token punctuation">)</span>
+        err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">case</span> LookupHeap<span class="token punctuation">:</span>
+        p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"heap"</span><span class="token punctuation">)</span>
+        err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">case</span> LookupAllocs<span class="token punctuation">:</span>
+        p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"allocs"</span><span class="token punctuation">)</span>
+        err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">case</span> LookupBlock<span class="token punctuation">:</span>
+        p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"block"</span><span class="token punctuation">)</span>
+        err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token keyword">case</span> LookupMutex<span class="token punctuation">:</span>
+        p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"mutex"</span><span class="token punctuation">)</span>
+        err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> err
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接下来我们只需要对该方法进行调用就好了，其提供了 <code>io.Writer</code> 接口，也就是只要实现了对应的 Write 方法，我们可以将其写到任何支持地方去，如下：</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token operator">...</span>
+<span class="token keyword">func</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    runtime<span class="token punctuation">.</span><span class="token function">SetMutexProfileFraction</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    runtime<span class="token punctuation">.</span><span class="token function">SetBlockProfileRate</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/heap"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupHeap<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/threadcreate"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupThreadcreate<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/block"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupBlock<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/goroutine"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupGoroutine<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
+    <span class="token boolean">_</span> <span class="token operator">=</span> http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">"0.0.0.0:6060"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上述代码中，我们将采集结果写入到了控制台上，我们可以进行一下验证，调用 <code>http://127.0.0.1:6060/lookup/heap</code>，控制台输出结果如下：</p>
+<pre class="line-numbers language-shell"><code class="language-shell">$ go run main.go
+heap profile: 0: 0 [0: 0] @ heap/1048576
+
+# runtime.MemStats
+# Alloc = 180632
+# TotalAlloc = 180632
+# Sys = 69928960
+# Lookups = 0
+...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>本章节所有测试都是使用的runtime_method.go文件，子章节只会展示我的测试代码，统一用一个入口main函数。</p>
+<p>mian函数如下</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"fmt"</span>
+    <span class="token string">"log"</span>
+    <span class="token string">"os"</span>
+    <span class="token string">"runtime"</span>
+    <span class="token string">"runtime/pprof"</span>
+    <span class="token string">"sync"</span>
+    <span class="token string">"time"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 设置最大的可同时使用的 CPU 核数。只有一个操作系统线程可供用户的Go代码使用</span>
+    runtime<span class="token punctuation">.</span><span class="token function">GOMAXPROCS</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+    <span class="token function">CollectCpu</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">// CollectMutex()</span>
+    <span class="token comment" spellcheck="true">// CollectBlock()</span>
+    <span class="token comment" spellcheck="true">// CollectHeap()</span>
+    <span class="token comment" spellcheck="true">// CollectAllocs()</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>运行函数方法：执行命令,runtime_method.go是我的文件名</p>
+<pre class="line-numbers language-shell"><code class="language-shell">
+go run runtime_method.go
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>结果分析方式也是一样的，如下。</p>
+<pre><code>go tool pprof cpu.prof
+
+执行命令行两件套
+top
+list 函数名
+
+生成web页面查看
+web
+</code></pre><p>或者通过暴露http端口的方式，可以查看更多类型的图。</p>
+<pre class="line-numbers language-shell"><code class="language-shell">go tool pprof -http=:6060 cpu.prof<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<img src="/2021/07/18/shi-zhan/image-20210801183047601.png" alt="profile已经存在的文件" style="zoom:50%;">
+
+
+
+<h3 id="5-2-1-采集CPU-CPU-占用过高"><a href="#5-2-1-采集CPU-CPU-占用过高" class="headerlink" title="5.2.1 采集CPU(CPU 占用过高)"></a>5.2.1 采集CPU(CPU 占用过高)</h3><pre class="line-numbers language-go"><code class="language-go">
+<span class="token keyword">func</span> <span class="token function">CollectCpu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 创建分析文件，在当前目录下</span>
+    file<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./cpu.prof"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"创建采集文件失败, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 进行cpu数据的获取</span>
+    pprof<span class="token punctuation">.</span><span class="token function">StartCPUProfile</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span>
+    <span class="token keyword">defer</span> pprof<span class="token punctuation">.</span><span class="token function">StopCPUProfile</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 执行一段有问题的代码</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">go</span> <span class="token function">do1</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-2-2-采集内存-heap-内存占用过高"><a href="#5-2-2-采集内存-heap-内存占用过高" class="headerlink" title="5.2.2 采集内存(heap-内存占用过高)"></a>5.2.2 采集内存(heap-内存占用过高)</h3><p><code>作用：看哪些方法分配了最多的内存</code></p>
+<pre class="line-numbers language-go"><code class="language-go">
+<span class="token keyword">const</span> <span class="token punctuation">(</span>
+    Ki <span class="token operator">=</span> <span class="token number">1024</span>
+    Mi <span class="token operator">=</span> Ki <span class="token operator">*</span> Ki
+    Gi <span class="token operator">=</span> Ki <span class="token operator">*</span> Mi
+    Ti <span class="token operator">=</span> Ki <span class="token operator">*</span> Gi
+    Pi <span class="token operator">=</span> Ki <span class="token operator">*</span> Ti
+<span class="token punctuation">)</span>
+
+<span class="token keyword">type</span> Mouse <span class="token keyword">struct</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    buffer <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span>Mi<span class="token punctuation">]</span><span class="token builtin">byte</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token keyword">func</span> <span class="token punctuation">(</span>m <span class="token operator">*</span>Mouse<span class="token punctuation">)</span><span class="token function">StealMem</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    max <span class="token operator">:=</span> Gi
+    <span class="token keyword">for</span> <span class="token function">len</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>buffer<span class="token punctuation">)</span> <span class="token operator">*</span> Mi <span class="token operator">&lt;</span> max <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        m<span class="token punctuation">.</span>buffer <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>buffer<span class="token punctuation">,</span> <span class="token punctuation">[</span>Mi<span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token keyword">func</span> <span class="token function">CollectHeap</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 设置采样率，默认每分配512*1024字节采样一次。如果设置为0则禁止采样，只能设置一次</span>
+    runtime<span class="token punctuation">.</span>MemProfileRate <span class="token operator">=</span> <span class="token number">512</span> <span class="token operator">*</span> <span class="token number">1024</span>
+
+    f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./heap.prof"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create heap profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 高的内存占用 : 有个循环会一直向 m.buffer 里追加长度为 1 MiB 的数组，直到总容量到达 1 GiB 为止，且一直不释放这些内存，这就难怪会有这么高的内存占用了。</span>
+    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>Mouse<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    m<span class="token punctuation">.</span><span class="token function">StealMem</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// runtime.GC() // 执行GC，避免垃圾对象干扰</span>
+
+    <span class="token comment" spellcheck="true">// 将剖析概要信息记录到文件</span>
+    <span class="token keyword">if</span> err <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">WriteHeapProfile</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not write heap profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-2-3-采集内存-allocs-频繁内存回收"><a href="#5-2-3-采集内存-allocs-频繁内存回收" class="headerlink" title="5.2.3 采集内存(allocs-频繁内存回收)"></a>5.2.3 采集内存(allocs-频繁内存回收)</h3><p>获取程序运行依赖，所有内存分配的历史</p>
+<pre class="line-numbers language-go"><code class="language-go">
+<span class="token keyword">func</span> <span class="token function">ApplyMemDoNothing</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 在 golang 里，对象是使用堆内存还是栈内存，由编译器进行逃逸分析并决定，如果对象不会逃逸，便可在使用栈内存，</span>
+    <span class="token comment" spellcheck="true">// 但总有意外，就是对象的尺寸过大时，便不得不使用堆内存。所以这里设置申请 16 MiB 的内存就是为了避免编译器直接在栈上分配，如果那样得话就不会涉及到 GC 了。</span>
+    <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">,</span> <span class="token number">16</span> <span class="token operator">*</span> Mi<span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token keyword">func</span> <span class="token function">CollectAllocs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 设置采样率，默认每分配512*1024字节采样一次。如果设置为0则禁止采样，只能设置一次</span>
+    runtime<span class="token punctuation">.</span>MemProfileRate <span class="token operator">=</span> <span class="token number">512</span> <span class="token operator">*</span> <span class="token number">1024</span>
+
+    f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./allocs.prof"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create memory profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 频繁内存回收</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">3</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+        <span class="token function">ApplyMemDoNothing</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// runtime.GC() // 执行GC，避免垃圾对象干扰</span>
+
+    <span class="token comment" spellcheck="true">// 将剖析概要信息记录到文件</span>
+    <span class="token keyword">if</span> err <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"allocs"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not write allocs profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>为了获取程序运行过程中 GC 日志，我们需要先退出炸弹程序，再在重新启动前赋予一个环境变量，同时为了避免其他日志的干扰，使用 grep 筛选出 GC 日志查看：</p>
+<p>由于内存的申请与释放频度是需要一段时间来统计的，所有我们保证炸弹程序已经运行了几分钟之后，再结束：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">go build runtime_method.go
+GODEBUG<span class="token operator">=</span>gctrace<span class="token operator">=</span>1 ./runtime_method <span class="token operator">|</span> <span class="token function">grep</span> gc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="/2021/07/18/shi-zhan/image-20210801181024454.png" alt="allocs执行结果"></p>
+<p>可以看到，GC 差不多每 3 秒就发生一次，且每次 GC 都会从 16MB 清理到几乎 0MB，说明程序在不断的申请内存再释放，这是高性能 golang 程序所不允许的。</p>
+<p>如果你希望进一步了解 golang 的 GC 日志可以查看<a target="_blank" rel="noopener" href="https://blog.wolfogre.com/redirect/v3/A9DNc05mRFLA-ZPsjfPhLuZDu-oKbuLF_wQyMDE2xf8CMDfF_wIwMcUtHy8qzDsGiVTMOxzFMRIDAzwK_jrFxVoWBjtuQQYW3Dsh_cU8Bk0KxTsGzDw8Bcw8ghxKiMU">《如何监控 golang 程序的垃圾回收》</a>,为保证实验节奏，这里不做展开。</p>
+<p>所以接下来使用 pprof 排查时，我们在乎的不是什么地方在占用大量内存，而是什么地方在不停地申请内存，这两者是有区别的。</p>
+<img src="/2021/07/18/shi-zhan/image-20210801182209809.png" alt="image-20210801182209809" style="zoom:33%;">
+
+
+
+
+
+
+
+<h3 id="5-2-4-采集goroutine-协程泄露"><a href="#5-2-4-采集goroutine-协程泄露" class="headerlink" title="5.2.4 采集goroutine(协程泄露)"></a>5.2.4 采集goroutine(协程泄露)</h3><pre class="line-numbers language-go"><code class="language-go">
+<span class="token keyword">func</span> <span class="token function">CollectGoroutine</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./goroutine.prof"</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create goroutine profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 函数每次释放 10 个协程出去，每个协程会睡眠 30 秒再退出，而 Drink 函数又会被反复调用</span>
+    <span class="token comment" spellcheck="true">// 这才导致大量协程泄露，试想一下，如果释放出的协程会永久阻塞，那么泄露的协程数便会持续增加，</span>
+    <span class="token comment" spellcheck="true">// 内存的占用也会持续增加，那迟早是会被操作系统杀死的。</span>
+
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">1000</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 等待所有协程运行结束</span>
+    <span class="token comment" spellcheck="true">//time.Sleep(100 * time.Second)</span>
+
+    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"goroutine"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>Stderr<span class="token punctuation">,</span> <span class="token string">"Can not write %s: %s"</span><span class="token punctuation">,</span> <span class="token string">"./goroutine.prof"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 设置最大的可同时使用的 CPU 核数。只有一个操作系统线程可供用户的Go代码使用</span>
+    runtime<span class="token punctuation">.</span><span class="token function">GOMAXPROCS</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// CollectCpu()</span>
+    <span class="token comment" spellcheck="true">// CollectMutex()</span>
+    <span class="token comment" spellcheck="true">// CollectBlock()</span>
+    <span class="token comment" spellcheck="true">// CollectHeap()</span>
+
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> err <span class="token operator">:=</span> http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">":6060"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        os<span class="token punctuation">.</span><span class="token function">Exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">for</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token function">CollectGoroutine</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">3</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2021/07/18/shi-zhan/image-20210801190007741.png" alt="goroutine执行结果"></p>
+<p>在调用栈上来讲，其展示顺序是自下而上的，也就是 <code>runtime.main</code> 方法调用了 <code>main.main</code> 方法，<code>main.main</code> 方法又调用了 <code>net/http.ListenAndServe</code> 方法，这里对应的也就是我们所使用的示例代码了，排查起来会非常方便。</p>
+<p>每个调用堆栈信息用 <code>-----------</code> 分割，函数方法前的就是指标数据，像 Goroutine Profiling 展示是就是该方法占用的 goroutine 的数量。而 Heap Profiling 展示的就是占用的内存大小，如下：</p>
+<img src="/2021/07/18/shi-zhan/image-20210801190856360.png" alt="traces使用" style="zoom: 33%;">
+
+
+
+<h3 id="5-2-5-采集mutex-锁的争用"><a href="#5-2-5-采集mutex-锁的争用" class="headerlink" title="5.2.5 采集mutex(锁的争用)"></a>5.2.5 采集mutex(锁的争用)</h3><pre class="line-numbers language-go"><code class="language-go">
+<span class="token keyword">func</span> <span class="token function">CollectMutex</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 进行采集量的设置，否则默认关闭，若设置的值小于等于 0 也会认为是关闭。</span>
+    <span class="token comment" spellcheck="true">// 一般有如下方式：调用 chan（通道）、调用 sync.Mutex （同步锁）、调用 time.Sleep() 等等。</span>
+    runtime<span class="token punctuation">.</span><span class="token function">SetMutexProfileFraction</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+    f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./mutex.prof"</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create memory profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 这个锁由主协程 Lock，并启动子协程去 Unlock，主协程会阻塞在第二次 Lock 这儿等待子协程完成任务，</span>
+    <span class="token comment" spellcheck="true">// 但由于子协程足足睡眠了3秒，导致主协程等待这个锁释放足足等了一秒钟。</span>
+    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>sync<span class="token punctuation">.</span>Mutex<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">3</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+        m<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 将阻塞剖析概要信息记录到文件</span>
+    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"mutex"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>Stderr<span class="token punctuation">,</span> <span class="token string">"Can not write %s: %s"</span><span class="token punctuation">,</span> <span class="token string">"./mutex.prof"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-2-6-采集block-阻塞操作"><a href="#5-2-6-采集block-阻塞操作" class="headerlink" title="5.2.6 采集block(阻塞操作)"></a>5.2.6 采集block(阻塞操作)</h3><pre class="line-numbers language-go"><code class="language-go">
+<span class="token keyword">func</span> <span class="token function">CollectBlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 参数5表示，每发生1次Goroutine阻塞事件则采样一次。默认值1。</span>
+    runtime<span class="token punctuation">.</span><span class="token function">SetBlockProfileRate</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+    f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./block.prof"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create block profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 不同于睡眠一秒，这里是从一个 channel 里读数据时，发生了阻塞，直到这个 channel 在一秒后才有数据读出，这就导致程序阻塞了一秒而非睡眠了一秒。</span>
+    <span class="token operator">&lt;-</span> time<span class="token punctuation">.</span><span class="token function">After</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 将阻塞剖析概要信息记录到文件</span>
+    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"block"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>Stderr<span class="token punctuation">,</span> <span class="token string">"Can not write %s: %s"</span><span class="token punctuation">,</span> <span class="token string">"./block.prof"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="5-3-net-http-pprof"><a href="#5-3-net-http-pprof" class="headerlink" title="5.3 net/http/pprof"></a>5.3 net/http/pprof</h2><p>上代码</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+    <span class="token string">"fmt"</span>
+    <span class="token string">"net/http"</span>
+    <span class="token boolean">_</span> <span class="token string">"net/http/pprof"</span>  <span class="token comment" spellcheck="true">// 第一步～</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">// 一段有问题的代码</span>
+<span class="token keyword">func</span> <span class="token function">do</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> c <span class="token keyword">chan</span> <span class="token builtin">int</span>
+    <span class="token keyword">for</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">select</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> v <span class="token operator">:=</span> <span class="token operator">&lt;-</span>c<span class="token punctuation">:</span>
+            fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"我是有问题的那一行，因为收不到值：%v"</span><span class="token punctuation">,</span> v<span class="token punctuation">)</span>
+        <span class="token keyword">default</span><span class="token punctuation">:</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 执行一段有问题的代码</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">go</span> <span class="token function">do</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">"127.0.0.1:9090"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过代码中的关键两步，执行起来就可以通过 <a target="_blank" rel="noopener" href="http://127.0.0.1:9090/debug/pprof/看到对应的数据啦～">http://127.0.0.1:9090/debug/pprof/看到对应的数据啦～</a></p>
+<p><img src="/2021/07/18/shi-zhan/image-20210726102116085.png" alt="http方式的结果"></p>
+<h1 id="6-采样的数据内容"><a href="#6-采样的数据内容" class="headerlink" title="6 采样的数据内容"></a>6 采样的数据内容</h1><p>不管是前文哪种方式获取，都可以进行分析。这里http的方式把可以看到的信息全部都列出来了。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+<th>url</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>allocs</td>
+<td><strong>内</strong>存分配情况的采样信息，过去所有内存抽样情况</td>
+<td>$host/debug/pprof/allocs?debug=1</td>
+</tr>
+<tr>
+<td>blocks</td>
+<td><strong>阻塞</strong>操作情况的采样信息，同步阻塞时程序栈跟踪的一些情况</td>
+<td>$host/debug/pprof/block?debug=1</td>
+</tr>
+<tr>
+<td>cmdline</td>
+<td>显示程序启动<strong>命令参数</strong>及其参数</td>
+<td></td>
+</tr>
+<tr>
+<td>goroutine</td>
+<td>显示当前所有<strong>协程</strong>的堆栈信息</td>
+<td></td>
+</tr>
+<tr>
+<td>heap</td>
+<td><strong>堆</strong>上的内存分配情况的采样信息，活动对象的内存分配情况</td>
+<td>$host/debug/pprof/heap?debug=1</td>
+</tr>
+<tr>
+<td>mutex</td>
+<td><strong>锁</strong>竞争情况的采样信息，互斥锁持有者的栈帧情况</td>
+<td>$host/debug/pprof/mutex?debug=1</td>
+</tr>
+<tr>
+<td>profile</td>
+<td><strong>cpu</strong>占用情况的采样信息，点击会下载文件，cpu profile，点击时会得到一个文件，然后可以用 go tool pprof 命令进行分析</td>
+<td>$host/debug/pprof/profile</td>
+</tr>
+<tr>
+<td>threadcreate</td>
+<td>系统<strong>线程</strong>创建情况的采样信息，创建新 OS 线程的堆栈跟踪情况</td>
+<td>$host/debug/pprof/threadcreate?debug=1</td>
+</tr>
+<tr>
+<td>trace</td>
+<td>程序<strong>运行跟踪</strong>信息，当前程序执行的追踪情况，点击时会得到一个文件，可以用 go tool trace 命令来分析这个文件</td>
+<td>$host/debug/pprof/trace</td>
+</tr>
+</tbody></table>
+<p>通过加粗的关键字，很直观可以看到能分析到的数据。</p>
+<p>（后文将重点根据cpu的采样信息展开命令行和图形化页面的讨论，其余项将在实战中应用）</p>
+<h1 id="7-数据分析方式"><a href="#7-数据分析方式" class="headerlink" title="7 数据分析方式"></a>7 数据分析方式</h1><h2 id="7-1-命令行"><a href="#7-1-命令行" class="headerlink" title="7.1 命令行"></a>7.1 命令行</h2><p>核心命令：<code>go tool pprof &lt;binary&gt; &lt;source&gt;</code></p>
+<p>binary：是应用的二进制文件，用来解析各种符号；</p>
+<p>source：代表生成的分析数据来源，可以是<strong>本地文件</strong>（前文生成的cpu.prof），也可以是<strong>http地址</strong>（比如：<code>go tool pprof http://127.0.0.1:9090/debug/pprof/profile</code>）</p>
+<blockquote>
+<p>需要注意的是：较大负载的情况下（要不就故意写故障代码，或者就模拟访问压力）获取的有效数据更有意义，如果处于空闲状态，得到的结果可能意义不大</p>
+</blockquote>
+<p>例子如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash">go build -o havlak1 havlak1.go 
+go tool pprof havlak1 havlak1.prof<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>通过工具go tool pprof打开URL或文件后，会显示一个 (pprof)提示符，你可以使用以下命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gv</td>
+<td>[focus]</td>
+<td>将当前概要文件以图形化和层次化的形式显示出来。当没有任何参数时，在概要文件中的所有采样都会被显示如果指定了focus参数，则只显示调用栈中有名称与此参数相匹配的函数或方法的采样。 focus参数应该是一个正则表达式需要dot、gv命令，执行下面的命令安装：Shell12sudo apt-<strong>get</strong> install graphvizsudo apt-<strong>get</strong> install gv</td>
+</tr>
+<tr>
+<td><strong>web</strong></td>
+<td>[focus]</td>
+<td>生成 svg 热点图片，与gv命令类似，web命令也会用图形化的方式来显示概要文件。但不同的是，web命令是在一个Web浏览器中显示它</td>
+</tr>
+<tr>
+<td><strong>list</strong></td>
+<td>[routine_regexp]</td>
+<td>列出名称与参数 routine_regexp代表的正则表达式相匹配的函数或方法的相关源代码</td>
+</tr>
+<tr>
+<td>weblist</td>
+<td>[routine_regexp]</td>
+<td>在Web浏览器中显示与list命令的输出相同的内容。它与list命令相比的优势是，在我们点击某行源码时还可以显示相应的汇编代码</td>
+</tr>
+<tr>
+<td><strong>top[N]</strong></td>
+<td>[–cum]</td>
+<td>top命令可以以本地采样计数为顺序列出函数或方法及相关信息如果存在标记 –cum则以累积采样计数为顺序默认情况下top命令会列出前10项内容。但是如果在top命令后面紧跟一个数字，那么其列出的项数就会与这个数字相同。默认显示 flat 前10的函数调用，可使用 -cum 以 cum 排序</td>
+</tr>
+<tr>
+<td>traces</td>
+<td></td>
+<td>打印所有采集的样本</td>
+</tr>
+<tr>
+<td>disasm</td>
+<td>[routine_regexp]</td>
+<td>显示名称与参数 routine_regexp相匹配的函数或方法的反汇编代码。并且，在显示的内容中还会标注有相应的采样计数</td>
+</tr>
+<tr>
+<td>callgrind</td>
+<td>[filename]</td>
+<td>利用callgrind工具生成统计文件。在这个文件中，说明了程序中函数的调用情况。如果未指定 filename参数，则直接调用kcachegrind工具。kcachegrind可以以可视化的方式查看callgrind工具生成的统计文件</td>
+</tr>
+<tr>
+<td>help</td>
+<td></td>
+<td>显示帮助</td>
+</tr>
+<tr>
+<td>quit</td>
+<td></td>
+<td>退出</td>
+</tr>
+</tbody></table>
+<p>开始分析前文生成的cpu.prof:</p>
+<pre><code>go tool pprof cpu.prof</code></pre><p><img src="/2021/07/18/shi-zhan/image-20210726103631287.png" alt="go tool pprof cpu.prof"></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>flat</td>
+<td>该函数占用CPU的耗时，不包含当前函数调用其它函数并等待返回的时间</td>
+<td>selectnbrecv占用CPU的耗时是12.29s</td>
+</tr>
+<tr>
+<td>flat%</td>
+<td>该函数占用CPU的耗时的百分比</td>
+<td>selectnbrecv耗时：12.29s，cpu总耗时：29.14，12.29/29.14=42.18</td>
+</tr>
+<tr>
+<td>sum%</td>
+<td>top命令中排在它上面的函数以及本函数flat%之和</td>
+<td>chanrecv：42.18%+30.47% = 72.65%</td>
+</tr>
+<tr>
+<td>cum</td>
+<td>当前函数加上该函数调用之前的累计CPU耗时，该指标包含子函数耗时</td>
+<td>chanrecv：8.88+0.54=9.42</td>
+</tr>
+<tr>
+<td>cum%</td>
+<td>当前函数加上该函数调用之前的累计CPU耗时的百分比</td>
+<td>9.42/29.14=32.33%</td>
+</tr>
+<tr>
+<td>最后一列</td>
+<td>当前函数名称</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<p><code>上面的命令解析</code></p>
+<p>发现do函数有点问题。此时通过命令：<strong>list funcName</strong>，来进行查看具体的位置</p>
+<p><img src="/2021/07/18/shi-zhan/image-20210726104115967.png" alt="web"></p>
+<blockquote>
+<p>1.在前文的对话框中继续输入：<strong>web</strong>。即可生成pprof001.svg的页面。</p>
+</blockquote>
+<blockquote>
+<p>2.执行命令：<code>go tool pprof -pdf cpu.prof</code>,会生成profile001.pdf的pdf文件。(参数可选text、pdf、svg)，不管哪种形式，都会得到以下图片：</p>
+</blockquote>
+<p><img src="/2021/07/18/shi-zhan/image-20210726104221828.png" alt="web生成的图片"></p>
+<h2 id="7-2-可视化界面方式"><a href="#7-2-可视化界面方式" class="headerlink" title="7.2 可视化界面方式"></a>7.2 可视化界面方式</h2><p>执行命令：<code>go tool pprof -http=:6060 cpu.prof</code></p>
+<p><img src="/2021/07/18/shi-zhan/image-20210726105437969.png" alt="http方式"></p>
+<img src="/2021/07/18/shi-zhan/image-20210726105651670.png" alt="汇总" style="zoom:33%;">
+
+
+
+
+
+<ul>
+<li>Top （同前文gdb交互页面的top命令）</li>
+</ul>
+<p><img src="/2021/07/18/shi-zhan/image-20210726110036404.png" alt="top"></p>
+<ul>
+<li>Graph（同前文gdb交互页面的web命令）</li>
+</ul>
+<img src="/2021/07/18/shi-zhan/image-20210726105527673.png" style="zoom: 33%;">
+
+
+
+
+
+<ul>
+<li><p>Flame Graph（火焰图）</p>
+<p>这里的颜色是随机分布的，只是看起来像火焰。</p>
+<p>调用顺序<strong>由上到下</strong>，每一块代表一个函数，越大代表占用 CPU 的时间更长。同时它也可以支持点击块深入进行分析。</p>
+</li>
+</ul>
+<p><img src="/2021/07/18/shi-zhan/image-20210726105743023.png" alt="Flame Graph"></p>
+<ul>
+<li>Peek（详细=树结构）</li>
+</ul>
+<p><img src="/2021/07/18/shi-zhan/image-20210726105837331.png" alt="peek"></p>
+<ul>
+<li>Source（同前文gdb交互页面的list FuncName命令）</li>
+</ul>
+<p><img src="/2021/07/18/shi-zhan/image-20210726105919086.png" alt="source"></p>
+<ul>
+<li>Disassemble</li>
+</ul>
+<p><img src="/2021/07/18/shi-zhan/image-20210726105956501.png" alt="image-20210726105956501"></p>
+<h1 id="8-数据分析实战"><a href="#8-数据分析实战" class="headerlink" title="8 数据分析实战"></a>8 数据分析实战</h1><h2 id="8-1-排查套路"><a href="#8-1-排查套路" class="headerlink" title="8.1 排查套路"></a>8.1 排查套路</h2><h3 id="8-1-1-套路1"><a href="#8-1-1-套路1" class="headerlink" title="8.1.1 套路1"></a>8.1.1 套路1</h3><p>这里先说一下排查套路。</p>
+<blockquote>
+<p>第一步：进入排除对应的gdb交互。</p>
+</blockquote>
+<pre><code>go tool pprof http://localhost:6060/debug/pprof/&#123;填上你想查看的内容&#125;</code></pre><p>内容关键字：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>allocs</td>
+<td><strong>内</strong>存分配情况的采样信息</td>
+</tr>
+<tr>
+<td>blocks</td>
+<td><strong>阻塞</strong>操作情况的采样信息</td>
+</tr>
+<tr>
+<td>cmdline</td>
+<td>显示程序启动<strong>命令参数</strong>及其参数</td>
+</tr>
+<tr>
+<td>goroutine</td>
+<td>显示当前所有<strong>协程</strong>的堆栈信息</td>
+</tr>
+<tr>
+<td>heap</td>
+<td><strong>堆</strong>上的内存分配情况的采样信息</td>
+</tr>
+<tr>
+<td>mutex</td>
+<td><strong>锁</strong>竞争情况的采样信息</td>
+</tr>
+<tr>
+<td>profile</td>
+<td><strong>cpu</strong>占用情况的采样信息，点击会下载文件</td>
+</tr>
+<tr>
+<td>threadcreate</td>
+<td>系统<strong>线程</strong>创建情况的采样信息</td>
+</tr>
+<tr>
+<td>trace</td>
+<td>程序<strong>运行跟踪</strong>信息</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>第二步：三联招，top-&gt;list FuncName-&gt;web</p>
+</blockquote>
+<p>通过占用比分析，查看具体代码行数，看大图确认。</p>
+<blockquote>
+<p>第三步：解决问题。</p>
+</blockquote>
+<p>（细心的同学可能会发现没有对trace进行分析，这个请期待《一看就懂系列之Golang的trace》）</p>
+<h3 id="8-1-2-套路2-推荐"><a href="#8-1-2-套路2-推荐" class="headerlink" title="8.1.2 套路2-推荐"></a>8.1.2 套路2-推荐</h3><p>将其重新运行起来，然后在其它窗口执行下述命令：</p>
+<pre class="line-numbers language-shell"><code class="language-shell">wget http://127.0.0.1:6060/debug/pprof/profile   <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>默认需要等待 30 秒，执行完毕后可在当前目录下发现采集的文件 profile，针对可视化界面我们有两种方式可进行下一步分析：</p>
+<p>该命令将在所指定的端口号运行一个 PProf 的分析用的站点。</p>
+<pre class="line-numbers language-shell"><code class="language-shell">go tool pprof -http=:6001 profile <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="8-2-背景说明"><a href="#8-2-背景说明" class="headerlink" title="8.2 背景说明"></a>8.2 背景说明</h2><p>本章节使用WOLFOGRE的文章进行实践。</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> clone github.com/wolfogre/go-pprof-practice
+<span class="token function">cd</span> <span class="token variable">$GOPATH</span>/src/github.com/wolfogre/go-pprof-practice
+go mod init
+go mod tidy
+go mod download
+go build
+./go-pprof-practice<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>运行后注意查看一下资源是否吃紧，机器是否还能扛得住，坚持一分钟，如果确认没问题，咱们再进行下一步。</p>
+<p><a target="_blank" rel="noopener" href="http://localhost:6060/debug/pprof/"><br>http://localhost:6060/debug/pprof/</a></p>
+<p><img src="file:///Users/bytedance/MyBlog/source/_posts/%E5%AE%9E%E6%88%98/image-20210801203418974.png?lastModify=1627827194" alt="image-20210801203418974"></p>
+<h2 id="8-3-排查-CPU-占用过高"><a href="#8-3-排查-CPU-占用过高" class="headerlink" title="8.3 排查 CPU 占用过高"></a>8.3 排查 CPU 占用过高</h2><p>我们首先通过活动监视器（或任务管理器、top 命令，取决于你的操作系统和你的喜好），查看一下炸弹程序的 CPU 占用：</p>
+<img src="/2021/07/18/shi-zhan/image-20210801204540416.png" alt="image-20210801204540416" style="zoom:50%;">
+
+
+
+<pre class="line-numbers language-shell"><code class="language-shell">
+wget http://localhost:6060/debug/pprof/profile
+go tool pprof -http=:8080 profile
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2021/07/18/shi-zhan/image-20210801213119054.png" alt></p>
+<img src="/2021/07/18/shi-zhan/image-20210801211815133.png" alt="image-20210801211815133" style="zoom: 33%;">
+
+<p>很明显，CPU 占用过高是 <code>github.com/wolfogre/go-pprof-practice/animal/felidae/tiger.(*Tiger).Eat</code> 造成的。</p>
+<p>可以看到，是第 24 行那个一百亿次空循环占用了大量 CPU 时间，至此，问题定位成功！</p>
+<img src="/2021/07/18/shi-zhan/image-20210801213511656.png" alt="image-20210801213511656" style="zoom:33%;">
+
+<p>接下来有一个扩展操作：图形化显示调用栈信息，这很酷，但是需要你事先在机器上安装 <code>graphviz</code>，大多数系统上可以轻松安装它：</p>
+<pre class="line-numbers language-shell"><code class="language-shell">brew install graphviz # for macos
+apt install graphviz # for ubuntu
+yum install graphviz # for centos<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>至此，这一小节使用 pprof 定位 CPU 占用的实验就结束了，你需要输入 <code>exit</code> 退出 pprof 的交互式终端。</p>
+<p>为了方便进行后面的实验，我们修复一下这个问题，不用太麻烦，注释掉相关代码即可：</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>t <span class="token operator">*</span>Tiger<span class="token punctuation">)</span> <span class="token function">Eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>t<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"eat"</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">//loop := 10000000000</span>
+    <span class="token comment" spellcheck="true">//for i := 0; i &lt; loop; i++ &amp;#123;</span>
+    <span class="token comment" spellcheck="true">//    // do nothing</span>
+    <span class="token comment" spellcheck="true">//&amp;#125;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>之后修复问题的的方法都是注释掉相关的代码，不再赘述。你可能觉得这很粗暴，但要知道，这个实验的重点是如何使用 pprof 定位问题，我们不需要花太多时间在改代码上。</p>
+<h2 id="8-4-排查内存占用过高"><a href="#8-4-排查内存占用过高" class="headerlink" title="8.4 排查内存占用过高"></a>8.4 排查内存占用过高</h2><p>重新编译炸弹程序，再次运行，可以看到 CPU 占用率已经下来了，但是内存的占用率仍然很高：</p>
+<img src="/2021/07/18/shi-zhan/image-20210801213859734.png" alt="image-20210801213859734" style="zoom: 50%;">
+
+
+
+
+
+
+
+<p><img src="/2021/07/18/shi-zhan/image-20210801214029301.png" alt="image-20210801214029301"></p>
+<p>可以看到这次出问题的地方在 <code>github.com/wolfogre/go-pprof-practice/animal/muridae/mouse.(*Mouse).Steal</code></p>
+<p>注释代码就可以了</p>
+<table>
+<thead>
+<tr>
+<th>选项名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>alloc_objects</td>
+<td>分析应用程序的内存临时分配情况</td>
+</tr>
+<tr>
+<td>alloc_space</td>
+<td>查看每个函数分配的内存空间大小</td>
+</tr>
+<tr>
+<td>inuse_space</td>
+<td>分析应用程序的常驻内存占用情况</td>
+</tr>
+<tr>
+<td>inuse_objects</td>
+<td>查看每个函数所分配的对象数量</td>
+</tr>
+</tbody></table>
+<p>执行该命令后，能够很快的拉取到其结果，因为它不需要像 CPU Profiling 做采样等待，这里需要注意的一点是 <code>Type</code> 这一个选项，你可以看到它默认显示的是 <code>inuse_space</code>，实际上可以针对多种内存概况进行分析，常用的类别如下：</p>
+<ul>
+<li>inuse_space：分析应用程序的常驻内存占用情况。</li>
+</ul>
+<pre class="line-numbers language-shell"><code class="language-shell">⋊> ~/testpprof go tool pprof -inuse_space http://localhost:6060/debug/pprof/heap                                                                                                              
+Fetching profile over HTTP from http://localhost:6060/debug/pprof/heap
+Saved profile in /Users/xxx/pprof/pprof.alloc_objects.alloc_space.inuse_objects.inuse_space.003.pb.gz
+Type: inuse_space
+Time: Aug 1, 2021 at 9:41pm (CST)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof)
+(pprof)
+(pprof) top
+Showing nodes accounting for 1GB, 100% of 1GB total
+      flat  flat%   sum%        cum   cum%
+       1GB   100%   100%        1GB   100%  github.com/wolfogre/go-pprof-practice/animal/muridae/mouse.(*Mouse).Steal
+         0     0%   100%        1GB   100%  github.com/wolfogre/go-pprof-practice/animal/muridae/mouse.(*Mouse).Live
+         0     0%   100%        1GB   100%  main.main
+         0     0%   100%        1GB   100%  runtime.main
+(pprof) <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>alloc_objects：分析应用程序的内存临时分配情况。</li>
+</ul>
+<pre class="line-numbers language-shell"><code class="language-shell">⋊> ~/testpprof go tool pprof -alloc_objects http://localhost:6060/debug/pprof/heap                                                                                                            
+Fetching profile over HTTP from http://localhost:6060/debug/pprof/heap
+Saved profile in /Users/xxx/pprof/pprof.alloc_objects.alloc_space.inuse_objects.inuse_space.004.pb.gz
+Type: alloc_objects
+Time: Aug 1, 2021 at 9:43pm (CST)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof)
+(pprof) top
+Showing nodes accounting for 51, 100% of 51 total
+      flat  flat%   sum%        cum   cum%
+        41 80.39% 80.39%         41 80.39%  github.com/wolfogre/go-pprof-practice/animal/canidae/dog.(*Dog).Run (inline)
+        10 19.61%   100%         10 19.61%  github.com/wolfogre/go-pprof-practice/animal/muridae/mouse.(*Mouse).Steal
+         0     0%   100%         41 80.39%  github.com/wolfogre/go-pprof-practice/animal/canidae/dog.(*Dog).Live
+         0     0%   100%         10 19.61%  github.com/wolfogre/go-pprof-practice/animal/muridae/mouse.(*Mouse).Live
+         0     0%   100%         51   100%  main.main
+         0     0%   100%         51   100%  runtime.main
+(pprof)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>另外还有 inuse_objects 和 alloc_space 类别，分别对应查看每个函数所分别的对象数量和查看分配的内存空间大小，具体可根据情况选用。</p>
+<h2 id="8-5-排查频繁内存回收"><a href="#8-5-排查频繁内存回收" class="headerlink" title="8.5 排查频繁内存回收"></a>8.5 排查频繁内存回收</h2><p>你应该知道，频繁的 GC 对 golang 程序性能的影响也是非常严重的。虽然现在这个炸弹程序内存使用量并不高，但这会不会是频繁 GC 之后的假象呢？</p>
+<p>为了获取程序运行过程中 GC 日志，我们需要先退出炸弹程序，再在重新启动前赋予一个环境变量，同时为了避免其他日志的干扰，使用 grep 筛选出 GC 日志查看：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">GODEBUG<span class="token operator">=</span>gctrace<span class="token operator">=</span>1 ./go-pprof-practice <span class="token operator">|</span> <span class="token function">grep</span> gc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>日志输出如下：</p>
+<img src="/2021/07/18/shi-zhan/4a500684e36566cc74cef1e69b4898c99dfb008f3293f3892ad64990e2c62283.jpg" alt style="zoom:50%;">
+
+<p>可以看到，GC 差不多每 3 秒就发生一次，且每次 GC 都会从 16MB 清理到几乎 0MB，说明程序在不断的申请内存再释放，这是高性能 golang 程序所不允许的。</p>
+<p>如果你希望进一步了解 golang 的 GC 日志可以查看<a target="_blank" rel="noopener" href="https://blog.wolfogre.com/redirect/v3/A9DNc05mRFLA-ZPsjfPhLuZDu-oKbuLF_wQyMDE2xf8CMDfF_wIwMcUtHy8qzDsGiVTMOxzFMRIDAzwK_jrFxVoWBjtuQQYW3Dsh_cU8Bk0KxTsGzDw8Bcw8ghxKiMU">《如何监控 golang 程序的垃圾回收》</a>,为保证实验节奏，这里不做展开。</p>
+<p>所以接下来使用 pprof 排查时，我们在乎的不是什么地方在占用大量内存，而是什么地方在不停地申请内存，这两者是有区别的。</p>
+<p>由于内存的申请与释放频度是需要一段时间来统计的，所有我们保证炸弹程序已经运行了几分钟之后，再运行命令：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">go tool pprof http://localhost:6060/debug/pprof/allocs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>同样使用 top、list、web 大法：</p>
+<img src="/2021/07/18/shi-zhan/7c0bc1cc6839e904865d5c20e363a2876aa1d99076bfdce81e439fbbde4cc42f.png" alt="image" style="zoom:50%;">
+
+<p><img src="/2021/07/18/shi-zhan/087bc92dffda268e29817ccdfd2f61c94a0a1b7e74298a00c8b568b07db1a3b3.png" alt="image"></p>
+<p>可以看到 <code>github.com/wolfogre/go-pprof-practice/animal/canidae/dog.(*Dog).Run</code> 会进行无意义的内存申请，而这个函数又会被频繁调用，这才导致程序不停地进行 GC:</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>Dog<span class="token punctuation">)</span> <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>d<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"run"</span><span class="token punctuation">)</span>
+    <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">,</span> <span class="token number">16</span> <span class="token operator">*</span> constant<span class="token punctuation">.</span>Mi<span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里有个小插曲，你可尝试一下将 <code>16 * constant.Mi</code> 修改成一个较小的值，重新编译运行，会发现并不会引起频繁 GC，原因是在 golang 里，对象是使用堆内存还是栈内存，由编译器进行逃逸分析并决定，如果对象不会逃逸，便可在使用栈内存，但总有意外，就是对象的尺寸过大时，便不得不使用堆内存。所以这里设置申请 16 MiB 的内存就是为了避免编译器直接在栈上分配，如果那样得话就不会涉及到 GC 了。</p>
+<p>我们同样注释掉问题代码，重新编译执行，可以看到这一次，程序的 GC 频度要低很多，以至于短时间内都看不到 GC 日志了：</p>
+<p><img src="/2021/07/18/shi-zhan/32e5e14a2d2000367e988242fb463d8ae809d44fac7093c5a9b06e39ecb81370.jpg" alt="image"></p>
+<h2 id="8-6-排查协程泄露"><a href="#8-6-排查协程泄露" class="headerlink" title="8.6 排查协程泄露"></a>8.6 排查协程泄露</h2><p>由于 golang 自带内存回收，所以一般不会发生内存泄露。但凡事都有例外，在 golang 中，协程本身是可能泄露的，或者叫协程失控，进而导致内存泄露。</p>
+<p>我们在浏览器里可以看到，此时程序的协程数已经多达 106 条：</p>
+<p><img src="/2021/07/18/shi-zhan/a8e2b63a63274980eecbac63f848356039f719559e4664e8937f271403aa5d75.jpg" alt="image"></p>
+<p>虽然 106 条并不算多，但对于这样一个小程序来说，似乎还是不正常的。为求安心，我们再次是用 pprof 来排查一下：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">go tool pprof http://localhost:6060/debug/pprof/goroutine<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>同样是 top、list、web 大法：</p>
+<p><img src="/2021/07/18/shi-zhan/75512a296f062e71f29251273f8496ea5deedcb9f104b99342f8dccb9bb1277e.png" alt="image"></p>
+<p><img src="/2021/07/18/shi-zhan/6bbba6ec436951c6857ba231dcb14cefce7133d6833ece711230264e2bd9ce9c.png" alt="image"></p>
+<p>可能这次问题藏得比较隐晦，但仔细观察还是不难发现，问题在于 <code>github.com/wolfogre/go-pprof-practice/animal/canidae/wolf.(*Wolf).Drink</code> 在不停地创建没有实际作用的协程：</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>w <span class="token operator">*</span>Wolf<span class="token punctuation">)</span> <span class="token function">Drink</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>w<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"drink"</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">30</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，Drink 函数每次回释放 10 个协程出去，每个协程会睡眠 30 秒再退出，而 Drink 函数又会被反复调用，这才导致大量协程泄露，试想一下，如果释放出的协程会永久阻塞，那么泄露的协程数便会持续增加，内存的占用也会持续增加，那迟早是会被操作系统杀死的。</p>
+<p>我们注释掉问题代码，重新编译运行可以看到，协程数已经降到 4 条了：</p>
+<p><img src="/2021/07/18/shi-zhan/cd7e95c42e61bcd16d65ea7892adb09b668b62b9f2c47966982a6e779a3a8917.jpg" alt="image"></p>
+<h2 id="8-7-排查锁的争用"><a href="#8-7-排查锁的争用" class="headerlink" title="8.7 排查锁的争用"></a>8.7 排查锁的争用</h2><p>到目前为止，我们已经解决这个炸弹程序的所有资源占用问题，但是事情还没有完，我们需要进一步排查那些会导致程序运行慢的性能问题，这些问题可能并不会导致资源占用，但会让程序效率低下，这同样是高性能程序所忌讳的。</p>
+<p>我们首先想到的就是程序中是否有不合理的锁的争用，我们倒一倒，回头看看上一张图，虽然协程数已经降到 4 条，但还显示有一个 mutex 存在争用问题。</p>
+<p>相信到这里，你已经触类旁通了，无需多言，开整。</p>
+<pre class="line-numbers language-bash"><code class="language-bash">go tool pprof http://localhost:6060/debug/pprof/mutex<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>同样是 top、list、web 大法：</p>
+<p><img src="/2021/07/18/shi-zhan/7484245a189adcd85181806fe1e380e6c043f0188d0d7949448819b3f55ce20f.jpg" alt="image"></p>
+<p><img src="/2021/07/18/shi-zhan/4413eeb48e86038a581ee76b53476099c026a1e1be5a8dc7f4b8f88a46711d3d.png" alt="image"></p>
+<p>可以看出来这问题出在 <code>github.com/wolfogre/go-pprof-practice/animal/canidae/wolf.(*Wolf).Howl</code>。但要知道，在代码中使用锁是无可非议的，并不是所有的锁都会被标记有问题，我们看看这个有问题的锁那儿触雷了。</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>w <span class="token operator">*</span>Wolf<span class="token punctuation">)</span> <span class="token function">Howl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>w<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"howl"</span><span class="token punctuation">)</span>
+
+    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>sync<span class="token punctuation">.</span>Mutex<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+        m<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，这个锁由主协程 Lock，并启动子协程去 Unlock，主协程会阻塞在第二次 Lock 这儿等待子协程完成任务，但由于子协程足足睡眠了一秒，导致主协程等待这个锁释放足足等了一秒钟。虽然这可能是实际的业务需要，逻辑上说得通，并不一定真的是性能瓶颈，但既然它出现在我写的“炸弹”里，就肯定不是什么“业务需要”啦。</p>
+<p>所以，我们注释掉这段问题代码，重新编译执行，继续。</p>
+<h2 id="8-8-排查阻塞操作"><a href="#8-8-排查阻塞操作" class="headerlink" title="8.8 排查阻塞操作"></a>8.8 排查阻塞操作</h2><p>好了，我们开始排查最后一个问题。</p>
+<p>在程序中，除了锁的争用会导致阻塞之外，很多逻辑都会导致阻塞。</p>
+<p><img src="/2021/07/18/shi-zhan/d830dc8a7323e7106d05857e97ceed34541212f47cb30071fe4a67ff8ab15aeb.jpg" alt="image"></p>
+<p>可以看到，这里仍有 2 个阻塞操作，虽然不一定是有问题的，但我们保证程序性能，我们还是要老老实实排查确认一下才对。</p>
+<pre class="line-numbers language-bash"><code class="language-bash">go tool pprof http://localhost:6060/debug/pprof/block<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>top、list、web，你懂得。</p>
+<p><img src="/2021/07/18/shi-zhan/1f2e7e8ecc6f6ee7e0f6f1890a8b3d0293ba2b52be3eb1ac1df15d2d169029f7.jpg" alt="image"></p>
+<p><img src="/2021/07/18/shi-zhan/12ac6115ebdee8b2e1217e3d47442298d714f2e3bd61b2132911ba694dabc615.png" alt="image"></p>
+<p>可以看到，阻塞操作位于 <code>github.com/wolfogre/go-pprof-practice/animal/felidae/cat.(*Cat).Pee</code>：</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>c <span class="token operator">*</span>Cat<span class="token punctuation">)</span> <span class="token function">Pee</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>c<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"pee"</span><span class="token punctuation">)</span>
+
+    <span class="token operator">&lt;-</span>time<span class="token punctuation">.</span><span class="token function">After</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>你应该可以看懂，不同于睡眠一秒，这里是从一个 channel 里读数据时，发生了阻塞，直到这个 channel 在一秒后才有数据读出，这就导致程序阻塞了一秒而非睡眠了一秒。</p>
+<p>这里有个疑点，就是上文中是可以看到有两个阻塞操作的，但这里只排查出了一个，我没有找到其准确原因，但怀疑另一个阻塞操作是程序监听端口提供 porof 查询时，涉及到 IO 操作发生了阻塞，即阻塞在对 HTTP 端口的监听上，但我没有进一步考证。</p>
+<p>不管怎样，恭喜你完整地完成了这个实验。</p>
+<h1 id="9-代码优化建议"><a href="#9-代码优化建议" class="headerlink" title="9 代码优化建议"></a>9 代码优化建议</h1><p>以下是一些从其它项目借鉴或者自己总结的实践经验，它们只是建议，而不是准则，实际项目中应该以性能分析数据来作为优化的参考，避免过早优化。</p>
+<ol>
+<li>对频繁分配的小对象，使用 <a target="_blank" rel="noopener" href="https://golang.org/pkg/sync/#Pool">sync.Pool</a> 对象池避免分配</li>
+<li>自动化的 DeepCopy 是非常耗时的，其中涉及到反射，内存分配，容器(如 map)扩展等，大概比手动拷贝慢一个数量级</li>
+<li>用 atomic.Load/StoreXXX，atomic.Value, sync.Map 等代替 Mutex。(优先级递减)</li>
+<li>使用高效的第三方库，如用<a target="_blank" rel="noopener" href="https://github.com/valyala/fasthttp">fasthttp</a>替代 net/http</li>
+<li>在开发环境加上<code>-race</code>编译选项进行竞态检查</li>
+<li>在开发环境开启 net/http/pprof，方便实时 pprof</li>
+<li>将所有外部IO(网络IO，磁盘IO)做成异步</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904079525675016#heading-14">一看就懂系列之Golang的pprof</a></p>
+<p><a target="_blank" rel="noopener" href="https://golang2.eddycjy.com/posts/ch6/01-pprof-1/#611-pprof-%E6%98%AF%E4%BB%80%E4%B9%88">煎鱼-Go 大杀器之性能剖析 PProf（上）</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.gmem.cc/go-program-profiling">Go应用性能剖析</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.wolfogre.com/posts/go-ppof-practice/#%E5%AE%9E%E9%AA%8C%E5%87%86%E5%A4%87">[WOLFOGRE’S BLOG]golang pprof 实战</a></p>
+<p><a target="_blank" rel="noopener" href="https://qcrao.com/2019/11/10/dive-into-go-pprof/#runtime-pprof">码农桃花源-深度解密Go语言之pprof</a></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">wish</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://debug-lixiwen.github.io/2021/07/18/shi-zhan/">https://debug-lixiwen.github.io/2021/07/18/shi-zhan/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">wish</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: '64d71a2c86d1aaf2c2d7',
+        clientSecret: '9996c6740b26467490f066fb424f3e1f7f422e93',
+        repo: 'debug-LiXiwen.github.io',
+        owner: 'debug-LiXiwen',
+        admin: "debug-LiXiwen",
+        id: '2021-07-18T10-21-53',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="vcomments" class="card-content" style="display: grid">
+    </div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'mO1Dt3RJnFRbv0T46spO9qdv-gzGzoHsz',
+        appKey: 'VJWtBjJlHTUdaSEhbX1xt1da',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '如果你没有Github账号，可以在这里评论'
+    });
+</script>
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2021/07/18/shi-zhan/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="golang的pprof与火焰图实战">
+                        
+                        <span class="card-title">golang的pprof与火焰图实战</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            golang的pprof与火焰图实战
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/golang/" class="post-category">
+                                    golang
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/07/14/goland-pei-zhi-xuan-zhong-bian-liang-yan-se/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="Goland配置选中变量颜色">
+                        
+                        <span class="card-title">Goland配置选中变量颜色</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Goland配置选中变量颜色
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-14
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Goland/" class="post-category">
+                                    Goland
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('200')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: wish<br />'
+            + '文章作者: Wish<br />'
+            + '文章链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('6'),
+            headingSelector: 'h1, h2, h3, h4, h5, h6'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3, h4, h5, h6').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color1">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2020</span>
+            <a href="/about" target="_blank">Wish</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            <!-- 
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">171.8k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+             -->
+
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2020";
+                    var startMonth = "4";
+                    var startDate = "23";
+                    var startHour = "18";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/debug-LiXiwen" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:2307026381@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2307026381" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2307026381" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="https://www.zhihu.com/people/clyz" class="tooltipped" target="_blank" data-tooltip="关注我的知乎: https://www.zhihu.com/people/clyz" data-position="top" data-delay="50">
+        <i class="fab fa-zhihu1">知</i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript" color="0,0,255"
+        pointColor="0,0,255" opacity='0.7'
+        zIndex="-1" count="40"
+        src="/libs/background/canvas-nest.js"></script>
+    
+
+    
+    
+    <script type="text/javascript" size="150" alpha='0.6'
+        zIndex="-1" src="/libs/background/ribbon.min.js" async="async"></script>
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
