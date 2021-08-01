@@ -480,14 +480,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    9.8k
+                    9.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    39 分
+                    38 分
                 </div>
                 
 
@@ -707,9 +707,9 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
     LookupMutex
 <span class="token punctuation">)</span>
 
-<span class="token keyword">func</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>lookupType LookupType<span class="token punctuation">,</span> w io<span class="token punctuation">.</span>Writer<span class="token punctuation">)</span> <span class="token builtin">error</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>lookupType LookupType<span class="token punctuation">,</span> w io<span class="token punctuation">.</span>Writer<span class="token punctuation">)</span> <span class="token builtin">error</span> <span class="token punctuation">{</span>
     <span class="token keyword">var</span> err <span class="token builtin">error</span>
-    <span class="token keyword">switch</span> lookupType <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">switch</span> lookupType <span class="token punctuation">{</span>
     <span class="token keyword">case</span> LookupGoroutine<span class="token punctuation">:</span>
         p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"goroutine"</span><span class="token punctuation">)</span>
         err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
@@ -728,32 +728,32 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
     <span class="token keyword">case</span> LookupMutex<span class="token punctuation">:</span>
         p <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"mutex"</span><span class="token punctuation">)</span>
         err <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
     <span class="token keyword">return</span> err
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>接下来我们只需要对该方法进行调用就好了，其提供了 <code>io.Writer</code> 接口，也就是只要实现了对应的 Write 方法，我们可以将其写到任何支持地方去，如下：</p>
 <pre class="line-numbers language-go"><code class="language-go"><span class="token operator">...</span>
-<span class="token keyword">func</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     runtime<span class="token punctuation">.</span><span class="token function">SetMutexProfileFraction</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
     runtime<span class="token punctuation">.</span><span class="token function">SetBlockProfileRate</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/heap"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/heap"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupHeap<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
-    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/threadcreate"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/threadcreate"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupThreadcreate<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
-    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/block"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/block"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupBlock<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
-    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/goroutine"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    http<span class="token punctuation">.</span><span class="token function">HandleFunc</span><span class="token punctuation">(</span><span class="token string">"/lookup/goroutine"</span><span class="token punctuation">,</span> <span class="token keyword">func</span><span class="token punctuation">(</span>w http<span class="token punctuation">.</span>ResponseWriter<span class="token punctuation">,</span> r <span class="token operator">*</span>http<span class="token punctuation">.</span>Request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">pprofLookup</span><span class="token punctuation">(</span>LookupGoroutine<span class="token punctuation">,</span> os<span class="token punctuation">.</span>Stdout<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
     <span class="token boolean">_</span> <span class="token operator">=</span> http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">"0.0.0.0:6060"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>在上述代码中，我们将采集结果写入到了控制台上，我们可以进行一下验证，调用 <code>http://127.0.0.1:6060/lookup/heap</code>，控制台输出结果如下：</p>
 <pre class="line-numbers language-shell"><code class="language-shell">$ go run main.go
 heap profile: 0: 0 [0: 0] @ heap/1048576
@@ -778,7 +778,7 @@ heap profile: 0: 0 [0: 0] @ heap/1048576
     <span class="token string">"time"</span>
 <span class="token punctuation">)</span>
 
-<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 设置最大的可同时使用的 CPU 核数。只有一个操作系统线程可供用户的Go代码使用</span>
     runtime<span class="token punctuation">.</span><span class="token function">GOMAXPROCS</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
 
@@ -787,7 +787,7 @@ heap profile: 0: 0 [0: 0] @ heap/1048576
     <span class="token comment" spellcheck="true">// CollectBlock()</span>
     <span class="token comment" spellcheck="true">// CollectHeap()</span>
     <span class="token comment" spellcheck="true">// CollectAllocs()</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
@@ -811,25 +811,25 @@ web
 
 
 <h3 id="5-2-1-采集CPU-CPU-占用过高"><a href="#5-2-1-采集CPU-CPU-占用过高" class="headerlink" title="5.2.1 采集CPU(CPU 占用过高)"></a>5.2.1 采集CPU(CPU 占用过高)</h3><pre class="line-numbers language-go"><code class="language-go">
-<span class="token keyword">func</span> <span class="token function">CollectCpu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">CollectCpu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
     <span class="token comment" spellcheck="true">// 创建分析文件，在当前目录下</span>
     file<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./cpu.prof"</span><span class="token punctuation">)</span>
-    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"创建采集文件失败, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
         <span class="token keyword">return</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
     <span class="token comment" spellcheck="true">// 进行cpu数据的获取</span>
     pprof<span class="token punctuation">.</span><span class="token function">StartCPUProfile</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span>
     <span class="token keyword">defer</span> pprof<span class="token punctuation">.</span><span class="token function">StopCPUProfile</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 执行一段有问题的代码</span>
-    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
         <span class="token keyword">go</span> <span class="token function">do1</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="5-2-2-采集内存-heap-内存占用过高"><a href="#5-2-2-采集内存-heap-内存占用过高" class="headerlink" title="5.2.2 采集内存(heap-内存占用过高)"></a>5.2.2 采集内存(heap-内存占用过高)</h3><p><code>作用：看哪些方法分配了最多的内存</code></p>
 <pre class="line-numbers language-go"><code class="language-go">
@@ -841,71 +841,71 @@ web
     Pi <span class="token operator">=</span> Ki <span class="token operator">*</span> Ti
 <span class="token punctuation">)</span>
 
-<span class="token keyword">type</span> Mouse <span class="token keyword">struct</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">type</span> Mouse <span class="token keyword">struct</span> <span class="token punctuation">{</span>
     buffer <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span>Mi<span class="token punctuation">]</span><span class="token builtin">byte</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-<span class="token keyword">func</span> <span class="token punctuation">(</span>m <span class="token operator">*</span>Mouse<span class="token punctuation">)</span><span class="token function">StealMem</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>m <span class="token operator">*</span>Mouse<span class="token punctuation">)</span><span class="token function">StealMem</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     max <span class="token operator">:=</span> Gi
-    <span class="token keyword">for</span> <span class="token function">len</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>buffer<span class="token punctuation">)</span> <span class="token operator">*</span> Mi <span class="token operator">&lt;</span> max <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        m<span class="token punctuation">.</span>buffer <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>buffer<span class="token punctuation">,</span> <span class="token punctuation">[</span>Mi<span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token function">len</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>buffer<span class="token punctuation">)</span> <span class="token operator">*</span> Mi <span class="token operator">&lt;</span> max <span class="token punctuation">{</span>
+        m<span class="token punctuation">.</span>buffer <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>buffer<span class="token punctuation">,</span> <span class="token punctuation">[</span>Mi<span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-<span class="token keyword">func</span> <span class="token function">CollectHeap</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">CollectHeap</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 设置采样率，默认每分配512*1024字节采样一次。如果设置为0则禁止采样，只能设置一次</span>
     runtime<span class="token punctuation">.</span>MemProfileRate <span class="token operator">=</span> <span class="token number">512</span> <span class="token operator">*</span> <span class="token number">1024</span>
 
     f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./heap.prof"</span><span class="token punctuation">)</span>
-    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create heap profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 高的内存占用 : 有个循环会一直向 m.buffer 里追加长度为 1 MiB 的数组，直到总容量到达 1 GiB 为止，且一直不释放这些内存，这就难怪会有这么高的内存占用了。</span>
-    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>Mouse<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>Mouse<span class="token punctuation">{</span><span class="token punctuation">}</span>
     m<span class="token punctuation">.</span><span class="token function">StealMem</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// runtime.GC() // 执行GC，避免垃圾对象干扰</span>
 
     <span class="token comment" spellcheck="true">// 将剖析概要信息记录到文件</span>
-    <span class="token keyword">if</span> err <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">WriteHeapProfile</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">WriteHeapProfile</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not write heap profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="5-2-3-采集内存-allocs-频繁内存回收"><a href="#5-2-3-采集内存-allocs-频繁内存回收" class="headerlink" title="5.2.3 采集内存(allocs-频繁内存回收)"></a>5.2.3 采集内存(allocs-频繁内存回收)</h3><p>获取程序运行依赖，所有内存分配的历史</p>
 <pre class="line-numbers language-go"><code class="language-go">
-<span class="token keyword">func</span> <span class="token function">ApplyMemDoNothing</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">ApplyMemDoNothing</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 在 golang 里，对象是使用堆内存还是栈内存，由编译器进行逃逸分析并决定，如果对象不会逃逸，便可在使用栈内存，</span>
     <span class="token comment" spellcheck="true">// 但总有意外，就是对象的尺寸过大时，便不得不使用堆内存。所以这里设置申请 16 MiB 的内存就是为了避免编译器直接在栈上分配，如果那样得话就不会涉及到 GC 了。</span>
     <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">,</span> <span class="token number">16</span> <span class="token operator">*</span> Mi<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-<span class="token keyword">func</span> <span class="token function">CollectAllocs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">CollectAllocs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 设置采样率，默认每分配512*1024字节采样一次。如果设置为0则禁止采样，只能设置一次</span>
     runtime<span class="token punctuation">.</span>MemProfileRate <span class="token operator">=</span> <span class="token number">512</span> <span class="token operator">*</span> <span class="token number">1024</span>
 
     f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./allocs.prof"</span><span class="token punctuation">)</span>
-    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create memory profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 频繁内存回收</span>
-    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
         time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">3</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
         <span class="token function">ApplyMemDoNothing</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
     <span class="token comment" spellcheck="true">// runtime.GC() // 执行GC，避免垃圾对象干扰</span>
 
     <span class="token comment" spellcheck="true">// 将剖析概要信息记录到文件</span>
-    <span class="token keyword">if</span> err <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"allocs"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">:=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"allocs"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not write allocs profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>为了获取程序运行过程中 GC 日志，我们需要先退出炸弹程序，再在重新启动前赋予一个环境变量，同时为了避免其他日志的干扰，使用 grep 筛选出 GC 日志查看：</p>
 <p>由于内存的申请与释放频度是需要一段时间来统计的，所有我们保证炸弹程序已经运行了几分钟之后，再结束：</p>
@@ -924,35 +924,35 @@ GODEBUG<span class="token operator">=</span>gctrace<span class="token operator">
 
 
 <h3 id="5-2-4-采集goroutine-协程泄露"><a href="#5-2-4-采集goroutine-协程泄露" class="headerlink" title="5.2.4 采集goroutine(协程泄露)"></a>5.2.4 采集goroutine(协程泄露)</h3><pre class="line-numbers language-go"><code class="language-go">
-<span class="token keyword">func</span> <span class="token function">CollectGoroutine</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">CollectGoroutine</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./goroutine.prof"</span><span class="token punctuation">)</span>
 
-    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create goroutine profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 函数每次释放 10 个协程出去，每个协程会睡眠 30 秒再退出，而 Drink 函数又会被反复调用</span>
     <span class="token comment" spellcheck="true">// 这才导致大量协程泄露，试想一下，如果释放出的协程会永久阻塞，那么泄露的协程数便会持续增加，</span>
     <span class="token comment" spellcheck="true">// 内存的占用也会持续增加，那迟早是会被操作系统杀死的。</span>
 
-    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">1000</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">1000</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
     <span class="token comment" spellcheck="true">// 等待所有协程运行结束</span>
     <span class="token comment" spellcheck="true">//time.Sleep(100 * time.Second)</span>
 
-    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"goroutine"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"goroutine"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>Stderr<span class="token punctuation">,</span> <span class="token string">"Can not write %s: %s"</span><span class="token punctuation">,</span> <span class="token string">"./goroutine.prof"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
 
-<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 设置最大的可同时使用的 CPU 核数。只有一个操作系统线程可供用户的Go代码使用</span>
     runtime<span class="token punctuation">.</span><span class="token function">GOMAXPROCS</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
 
@@ -961,19 +961,19 @@ GODEBUG<span class="token operator">=</span>gctrace<span class="token operator">
     <span class="token comment" spellcheck="true">// CollectBlock()</span>
     <span class="token comment" spellcheck="true">// CollectHeap()</span>
 
-    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> err <span class="token operator">:=</span> http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">":6060"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> err <span class="token operator">:=</span> http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">":6060"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
             log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
         os<span class="token punctuation">.</span><span class="token function">Exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-    <span class="token keyword">for</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">{</span>
         <span class="token function">CollectGoroutine</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">3</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><img src="/2021/07/18/shi-zhan/image-20210801190007741.png" alt="goroutine执行结果"></p>
@@ -984,56 +984,56 @@ GODEBUG<span class="token operator">=</span>gctrace<span class="token operator">
 
 
 <h3 id="5-2-5-采集mutex-锁的争用"><a href="#5-2-5-采集mutex-锁的争用" class="headerlink" title="5.2.5 采集mutex(锁的争用)"></a>5.2.5 采集mutex(锁的争用)</h3><pre class="line-numbers language-go"><code class="language-go">
-<span class="token keyword">func</span> <span class="token function">CollectMutex</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">CollectMutex</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 进行采集量的设置，否则默认关闭，若设置的值小于等于 0 也会认为是关闭。</span>
     <span class="token comment" spellcheck="true">// 一般有如下方式：调用 chan（通道）、调用 sync.Mutex （同步锁）、调用 time.Sleep() 等等。</span>
     runtime<span class="token punctuation">.</span><span class="token function">SetMutexProfileFraction</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
 
     f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./mutex.prof"</span><span class="token punctuation">)</span>
 
-    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create memory profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 这个锁由主协程 Lock，并启动子协程去 Unlock，主协程会阻塞在第二次 Lock 这儿等待子协程完成任务，</span>
     <span class="token comment" spellcheck="true">// 但由于子协程足足睡眠了3秒，导致主协程等待这个锁释放足足等了一秒钟。</span>
-    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>sync<span class="token punctuation">.</span>Mutex<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>sync<span class="token punctuation">.</span>Mutex<span class="token punctuation">{</span><span class="token punctuation">}</span>
     m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">3</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
         m<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
     m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">10</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 将阻塞剖析概要信息记录到文件</span>
-    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"mutex"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"mutex"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>Stderr<span class="token punctuation">,</span> <span class="token string">"Can not write %s: %s"</span><span class="token punctuation">,</span> <span class="token string">"./mutex.prof"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="5-2-6-采集block-阻塞操作"><a href="#5-2-6-采集block-阻塞操作" class="headerlink" title="5.2.6 采集block(阻塞操作)"></a>5.2.6 采集block(阻塞操作)</h3><pre class="line-numbers language-go"><code class="language-go">
-<span class="token keyword">func</span> <span class="token function">CollectBlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">CollectBlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 参数5表示，每发生1次Goroutine阻塞事件则采样一次。默认值1。</span>
     runtime<span class="token punctuation">.</span><span class="token function">SetBlockProfileRate</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
 
     f<span class="token punctuation">,</span> err <span class="token operator">:=</span> os<span class="token punctuation">.</span><span class="token function">Create</span><span class="token punctuation">(</span><span class="token string">"./block.prof"</span><span class="token punctuation">)</span>
-    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span><span class="token string">"could not create block profile: "</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     <span class="token keyword">defer</span> f<span class="token punctuation">.</span><span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 不同于睡眠一秒，这里是从一个 channel 里读数据时，发生了阻塞，直到这个 channel 在一秒后才有数据读出，这就导致程序阻塞了一秒而非睡眠了一秒。</span>
     <span class="token operator">&lt;-</span> time<span class="token punctuation">.</span><span class="token function">After</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
 
     <span class="token comment" spellcheck="true">// 将阻塞剖析概要信息记录到文件</span>
-    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"block"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> err <span class="token operator">=</span> pprof<span class="token punctuation">.</span><span class="token function">Lookup</span><span class="token punctuation">(</span><span class="token string">"block"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">WriteTo</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
         fmt<span class="token punctuation">.</span><span class="token function">Fprintf</span><span class="token punctuation">(</span>os<span class="token punctuation">.</span>Stderr<span class="token punctuation">,</span> <span class="token string">"Can not write %s: %s"</span><span class="token punctuation">,</span> <span class="token string">"./block.prof"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="5-3-net-http-pprof"><a href="#5-3-net-http-pprof" class="headerlink" title="5.3 net/http/pprof"></a>5.3 net/http/pprof</h2><p>上代码</p>
 <pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">package</span> main
 
@@ -1044,24 +1044,24 @@ GODEBUG<span class="token operator">=</span>gctrace<span class="token operator">
 <span class="token punctuation">)</span>
 
 <span class="token comment" spellcheck="true">// 一段有问题的代码</span>
-<span class="token keyword">func</span> <span class="token function">do</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">do</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">var</span> c <span class="token keyword">chan</span> <span class="token builtin">int</span>
-    <span class="token keyword">for</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">select</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">{</span>
+        <span class="token keyword">select</span> <span class="token punctuation">{</span>
         <span class="token keyword">case</span> v <span class="token operator">:=</span> <span class="token operator">&lt;-</span>c<span class="token punctuation">:</span>
             fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"我是有问题的那一行，因为收不到值：%v"</span><span class="token punctuation">,</span> v<span class="token punctuation">)</span>
         <span class="token keyword">default</span><span class="token punctuation">:</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 执行一段有问题的代码</span>
-    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
         <span class="token keyword">go</span> <span class="token function">do</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
     http<span class="token punctuation">.</span><span class="token function">ListenAndServe</span><span class="token punctuation">(</span><span class="token string">"127.0.0.1:9090"</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>通过代码中的关键两步，执行起来就可以通过 <a target="_blank" rel="noopener" href="http://127.0.0.1:9090/debug/pprof/看到对应的数据啦～">http://127.0.0.1:9090/debug/pprof/看到对应的数据啦～</a></p>
 <p><img src="/2021/07/18/shi-zhan/image-20210726102116085.png" alt="http方式的结果"></p>
@@ -1377,13 +1377,13 @@ apt install graphviz # for ubuntu
 yum install graphviz # for centos<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>至此，这一小节使用 pprof 定位 CPU 占用的实验就结束了，你需要输入 <code>exit</code> 退出 pprof 的交互式终端。</p>
 <p>为了方便进行后面的实验，我们修复一下这个问题，不用太麻烦，注释掉相关代码即可：</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>t <span class="token operator">*</span>Tiger<span class="token punctuation">)</span> <span class="token function">Eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>t <span class="token operator">*</span>Tiger<span class="token punctuation">)</span> <span class="token function">Eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>t<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"eat"</span><span class="token punctuation">)</span>
     <span class="token comment" spellcheck="true">//loop := 10000000000</span>
-    <span class="token comment" spellcheck="true">//for i := 0; i &lt; loop; i++ &amp;#123;</span>
+    <span class="token comment" spellcheck="true">//for i := 0; i &lt; loop; i++ {</span>
     <span class="token comment" spellcheck="true">//    // do nothing</span>
-    <span class="token comment" spellcheck="true">//&amp;#125;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    <span class="token comment" spellcheck="true">//}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>之后修复问题的的方法都是注释掉相关的代码，不再赘述。你可能觉得这很粗暴，但要知道，这个实验的重点是如何使用 pprof 定位问题，我们不需要花太多时间在改代码上。</p>
 <h2 id="8-4-排查内存占用过高"><a href="#8-4-排查内存占用过高" class="headerlink" title="8.4 排查内存占用过高"></a>8.4 排查内存占用过高</h2><p>重新编译炸弹程序，再次运行，可以看到 CPU 占用率已经下来了，但是内存的占用率仍然很高：</p>
 <img src="/2021/07/18/shi-zhan/image-20210801213859734.png" alt="image-20210801213859734" style="zoom: 50%;">
@@ -1478,10 +1478,10 @@ Showing nodes accounting for 51, 100% of 51 total
 
 <p><img src="/2021/07/18/shi-zhan/087bc92dffda268e29817ccdfd2f61c94a0a1b7e74298a00c8b568b07db1a3b3.png" alt="image"></p>
 <p>可以看到 <code>github.com/wolfogre/go-pprof-practice/animal/canidae/dog.(*Dog).Run</code> 会进行无意义的内存申请，而这个函数又会被频繁调用，这才导致程序不停地进行 GC:</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>Dog<span class="token punctuation">)</span> <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>Dog<span class="token punctuation">)</span> <span class="token function">Run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>d<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"run"</span><span class="token punctuation">)</span>
     <span class="token boolean">_</span> <span class="token operator">=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">byte</span><span class="token punctuation">,</span> <span class="token number">16</span> <span class="token operator">*</span> constant<span class="token punctuation">.</span>Mi<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里有个小插曲，你可尝试一下将 <code>16 * constant.Mi</code> 修改成一个较小的值，重新编译运行，会发现并不会引起频繁 GC，原因是在 golang 里，对象是使用堆内存还是栈内存，由编译器进行逃逸分析并决定，如果对象不会逃逸，便可在使用栈内存，但总有意外，就是对象的尺寸过大时，便不得不使用堆内存。所以这里设置申请 16 MiB 的内存就是为了避免编译器直接在栈上分配，如果那样得话就不会涉及到 GC 了。</p>
 <p>我们同样注释掉问题代码，重新编译执行，可以看到这一次，程序的 GC 频度要低很多，以至于短时间内都看不到 GC 日志了：</p>
 <p><img src="/2021/07/18/shi-zhan/32e5e14a2d2000367e988242fb463d8ae809d44fac7093c5a9b06e39ecb81370.jpg" alt="image"></p>
@@ -1494,14 +1494,14 @@ Showing nodes accounting for 51, 100% of 51 total
 <p><img src="/2021/07/18/shi-zhan/75512a296f062e71f29251273f8496ea5deedcb9f104b99342f8dccb9bb1277e.png" alt="image"></p>
 <p><img src="/2021/07/18/shi-zhan/6bbba6ec436951c6857ba231dcb14cefce7133d6833ece711230264e2bd9ce9c.png" alt="image"></p>
 <p>可能这次问题藏得比较隐晦，但仔细观察还是不难发现，问题在于 <code>github.com/wolfogre/go-pprof-practice/animal/canidae/wolf.(*Wolf).Drink</code> 在不停地创建没有实际作用的协程：</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>w <span class="token operator">*</span>Wolf<span class="token punctuation">)</span> <span class="token function">Drink</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>w <span class="token operator">*</span>Wolf<span class="token punctuation">)</span> <span class="token function">Drink</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>w<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"drink"</span><span class="token punctuation">)</span>
-    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span><span class="token number">30</span> <span class="token operator">*</span> time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+        <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以看到，Drink 函数每次回释放 10 个协程出去，每个协程会睡眠 30 秒再退出，而 Drink 函数又会被反复调用，这才导致大量协程泄露，试想一下，如果释放出的协程会永久阻塞，那么泄露的协程数便会持续增加，内存的占用也会持续增加，那迟早是会被操作系统杀死的。</p>
 <p>我们注释掉问题代码，重新编译运行可以看到，协程数已经降到 4 条了：</p>
 <p><img src="/2021/07/18/shi-zhan/cd7e95c42e61bcd16d65ea7892adb09b668b62b9f2c47966982a6e779a3a8917.jpg" alt="image"></p>
@@ -1513,17 +1513,17 @@ Showing nodes accounting for 51, 100% of 51 total
 <p><img src="/2021/07/18/shi-zhan/7484245a189adcd85181806fe1e380e6c043f0188d0d7949448819b3f55ce20f.jpg" alt="image"></p>
 <p><img src="/2021/07/18/shi-zhan/4413eeb48e86038a581ee76b53476099c026a1e1be5a8dc7f4b8f88a46711d3d.png" alt="image"></p>
 <p>可以看出来这问题出在 <code>github.com/wolfogre/go-pprof-practice/animal/canidae/wolf.(*Wolf).Howl</code>。但要知道，在代码中使用锁是无可非议的，并不是所有的锁都会被标记有问题，我们看看这个有问题的锁那儿触雷了。</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>w <span class="token operator">*</span>Wolf<span class="token punctuation">)</span> <span class="token function">Howl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>w <span class="token operator">*</span>Wolf<span class="token punctuation">)</span> <span class="token function">Howl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>w<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"howl"</span><span class="token punctuation">)</span>
 
-    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>sync<span class="token punctuation">.</span>Mutex<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    m <span class="token operator">:=</span> <span class="token operator">&amp;</span>sync<span class="token punctuation">.</span>Mutex<span class="token punctuation">{</span><span class="token punctuation">}</span>
     m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">go</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         time<span class="token punctuation">.</span><span class="token function">Sleep</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
         m<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
     m<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以看到，这个锁由主协程 Lock，并启动子协程去 Unlock，主协程会阻塞在第二次 Lock 这儿等待子协程完成任务，但由于子协程足足睡眠了一秒，导致主协程等待这个锁释放足足等了一秒钟。虽然这可能是实际的业务需要，逻辑上说得通，并不一定真的是性能瓶颈，但既然它出现在我写的“炸弹”里，就肯定不是什么“业务需要”啦。</p>
 <p>所以，我们注释掉这段问题代码，重新编译执行，继续。</p>
 <h2 id="8-8-排查阻塞操作"><a href="#8-8-排查阻塞操作" class="headerlink" title="8.8 排查阻塞操作"></a>8.8 排查阻塞操作</h2><p>好了，我们开始排查最后一个问题。</p>
@@ -1535,11 +1535,11 @@ Showing nodes accounting for 51, 100% of 51 total
 <p><img src="/2021/07/18/shi-zhan/1f2e7e8ecc6f6ee7e0f6f1890a8b3d0293ba2b52be3eb1ac1df15d2d169029f7.jpg" alt="image"></p>
 <p><img src="/2021/07/18/shi-zhan/12ac6115ebdee8b2e1217e3d47442298d714f2e3bd61b2132911ba694dabc615.png" alt="image"></p>
 <p>可以看到，阻塞操作位于 <code>github.com/wolfogre/go-pprof-practice/animal/felidae/cat.(*Cat).Pee</code>：</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>c <span class="token operator">*</span>Cat<span class="token punctuation">)</span> <span class="token function">Pee</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>c <span class="token operator">*</span>Cat<span class="token punctuation">)</span> <span class="token function">Pee</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     log<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>c<span class="token punctuation">.</span><span class="token function">Name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"pee"</span><span class="token punctuation">)</span>
 
     <span class="token operator">&lt;-</span>time<span class="token punctuation">.</span><span class="token function">After</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span>Second<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>你应该可以看懂，不同于睡眠一秒，这里是从一个 channel 里读数据时，发生了阻塞，直到这个 channel 在一秒后才有数据读出，这就导致程序阻塞了一秒而非睡眠了一秒。</p>
 <p>这里有个疑点，就是上文中是可以看到有两个阻塞操作的，但这里只排查出了一个，我没有找到其准确原因，但怀疑另一个阻塞操作是程序监听端口提供 porof 查询时，涉及到 IO 操作发生了阻塞，即阻塞在对 HTTP 端口的监听上，但我没有进一步考证。</p>
 <p>不管怎样，恭喜你完整地完成了这个实验。</p>
@@ -2348,7 +2348,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             <!-- 
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">173.9k</span>&nbsp;字
+                class="white-color">173k</span>&nbsp;字
             
             
             
