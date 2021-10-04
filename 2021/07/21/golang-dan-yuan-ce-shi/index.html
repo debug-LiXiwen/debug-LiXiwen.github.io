@@ -1320,7 +1320,11 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            从主库性能、容灾方面和空间容量来评估是否需要分片库
+                            决定因素我们评估一下数据库是否需要做水平拆分要考虑的几个要素主要是
+
+主库性能：受限于单个主库的CPU/内存/磁盘IOPS的影响，接近或者达到上限后，需要拆分。
+容灾方面：减少单个主库宕机对于写入的影响。
+空间容量：如果你公司的mysql容
                         
                     </div>
                     <div class="publish-info">

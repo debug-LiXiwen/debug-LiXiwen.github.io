@@ -382,19 +382,19 @@
                 </a>
                 
                 
-                <a href="/categories/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" title="单元测试: 1">
+                <a href="/categories/MySQL/" title="MySQL: 1">
                     <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            style="background-color: #D5F5E3;">单元测试
+                             chip-active "
+                            style="background-color: #D5F5E3;">MySQL
                         <span class="tag-length">1</span>
                     </span>
                 </a>
                 
                 
-                <a href="/categories/MySQL/" title="MySQL: 1">
+                <a href="/categories/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" title="单元测试: 1">
                     <span class="chip center-align waves-effect waves-light
-                             chip-active "
-                            style="background-color: #E8F8F5;">MySQL
+                             chip-default "
+                            style="background-color: #E8F8F5;">单元测试
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -433,7 +433,11 @@
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                从主库性能、容灾方面和空间容量来评估是否需要分片库
+                                决定因素我们评估一下数据库是否需要做水平拆分要考虑的几个要素主要是
+
+主库性能：受限于单个主库的CPU/内存/磁盘IOPS的影响，接近或者达到上限后，需要拆分。
+容灾方面：减少单个主库宕机对于写入的影响。
+空间容量：如果你公司的mysql容
                             
                         </div>
                         <div class="publish-info">
