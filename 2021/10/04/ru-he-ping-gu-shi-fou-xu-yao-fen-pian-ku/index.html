@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="golang单元测试攻略, Wish 后端开发">
+    <meta name="keywords" content="如何评估是否需要分片库, Wish 后端开发">
     <meta name="description" content="成功总是来之不易，坚持最为可贵">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>golang单元测试攻略 | wish</title>
+    <title>如何评估是否需要分片库 | wish</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -328,7 +328,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">golang单元测试攻略</h1>
+                    <h1 class="description center-align post-title">如何评估是否需要分片库</h1>
                 </div>
             </div>
         </div>
@@ -445,12 +445,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
-                                <span class="chip bg-color">单元测试</span>
+                            <a href="/tags/MySQL/">
+                                <span class="chip bg-color">MySQL</span>
                             </a>
                         
-                            <a href="/tags/golfing/">
-                                <span class="chip bg-color">golfing</span>
+                            <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">
+                                <span class="chip bg-color">分库分表</span>
                             </a>
                         
                     </div>
@@ -461,8 +461,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="post-category">
-                                单元测试
+                            <a href="/categories/MySQL/" class="post-category">
+                                MySQL
                             </a>
                         
                     </div>
@@ -474,28 +474,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-07-21
+                    2021-10-04
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-08-01
+                    2021-10-04
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2k
+                    709
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    2 分
                 </div>
                 
 
@@ -510,275 +510,22 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="1-Go测试的分类"><a href="#1-Go测试的分类" class="headerlink" title="1 Go测试的分类"></a>1 Go测试的分类</h1><ol>
-<li><p>单元测试</p>
-</li>
-<li><p>基准测试（性能测试）</p>
-</li>
-<li><p>子测试与子基准测试</p>
-</li>
-</ol>
-<h1 id="2-测试模式"><a href="#2-测试模式" class="headerlink" title="2 测试模式"></a>2 测试模式</h1><p>包列表模式：<code>go test .</code> 测试在命令上列出的每个包。正则匹配方式。</p>
-<p>当前目录模式：<code>go test</code></p>
-<h1 id="3-常用参数和示例"><a href="#3-常用参数和示例" class="headerlink" title="3 常用参数和示例"></a>3 常用参数和示例</h1><p>这里介绍几个常用的参数：</p>
-<ul>
-<li>-bench regexp 执行相应的 benchmarks，例如 -bench=.</li>
-<li>-cover 开启测试覆盖率；</li>
-<li>-run regexp 只运行 regexp 匹配的函数<ul>
-<li>例如 -run=TestAdd（-run TestAdd） 那么就执行包含有 <code>TestAdd 开头</code>的函数，<code>&#39;TestAdd$&#39;</code>代表只执行Array名字的函数</li>
-<li>参数支持通配符 <code>*</code>，和部分正则表达式，例如 <code>^</code>、<code>$</code>。</li>
-<li>-run=none，代表要执行这个名字的函数，如果没有就不执行，也就代表不执行单元测试</li>
-</ul>
-</li>
-<li>-v 显示测试的详细命令。<ul>
-<li><code>go test -v</code>，<code>-v</code> 参数会显示每个用例的测试结果</li>
-</ul>
-</li>
-<li><code>-benchtime</code> ：可以自定义测试时间</li>
-</ul>
-<p><code>go test</code>，该 package 下所有的文件的所有测试用例都会被执行。</p>
-<p><code>go test calc_test.go</code>，运行该 package 下的<code>calc_test.go</code>文件的所有测试用例。</p>
-<p><code>go test calc_test.go -run=TestAdd</code>，运行该 package 下的<code>calc_test.go</code>文件的以TestAdd开头的所有用例。</p>
-<p><code>go test calc_test.go -run=&#39;TestAdd$&#39;</code>，运行该 package 下的<code>calc_test.go</code>文件的TestAdd用例。</p>
-<h1 id="4-测试代码规范"><a href="#4-测试代码规范" class="headerlink" title="4 测试代码规范"></a>4 测试代码规范</h1><p>执行 <code>go test</code> 命令，它会在 <code>*_test.go</code> 中寻找 <code>test 测试</code>、<code>benchmark 基准</code> 和 <code>examples 示例</code> 函数。测试函数必须以 <code>TestXXX</code> 的函数名出现（XXX 为以非小写字母开头），基准函数必须以 <code>BenchmarkXXX</code> 的函数名出现，示例函数必须以 <code>ExampleXXX</code> 的形式。三种函数类似下面的签名形式：</p>
-<pre class="line-numbers language-golang"><code class="language-golang">// test 测试函数
-func TestXXX(t *testing.T) { ... }
-
-// benchmark 基准函数
-func BenchmarkXXX(b *testing.B) { ... }
-
-// examples 示例函数，其相关命名方式可以查看第一篇文章
-func ExamplePrintln() {
-    Println("The output of\nthis example.")
-    // Output: The output of
-    // this example.
-}
-或
-func ExamplePerm() {
-    for _, value := range Perm(4) {
-        fmt.Println(value)
-    }
-
-    // Unordered output: 4
-    // 2
-    // 1
-    // 3
-    // 0
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>Go 语言推荐测试文件和源代码文件放在一块，测试文件以 <code>_test.go</code> 结尾。比如，当前 package 有 <code>calc.go</code> 一个文件，我们想测试 <code>calc.go</code> 中的 <code>Add</code> 和 <code>Mul</code> 函数，那么应该新建 <code>calc_test.go</code> 作为测试文件。</p>
-<pre class="line-numbers language-text"><code class="language-text">example/
-   |--calc.go
-   |--calc_test.go<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>假如 <code>calc.go</code> 的代码如下：</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">package</span> main
-
-<span class="token keyword">func</span> <span class="token function">Add</span><span class="token punctuation">(</span>a <span class="token builtin">int</span><span class="token punctuation">,</span> b <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> a <span class="token operator">+</span> b
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token function">Mul</span><span class="token punctuation">(</span>a <span class="token builtin">int</span><span class="token punctuation">,</span> b <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token builtin">int</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> a <span class="token operator">*</span> b
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>那么 <code>calc_test.go</code> 中的测试用例可以这么写：</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">package</span> main
-
-<span class="token keyword">import</span> <span class="token string">"testing"</span>
-
-<span class="token keyword">func</span> <span class="token function">TestAdd</span><span class="token punctuation">(</span>t <span class="token operator">*</span>testing<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> ans <span class="token operator">:=</span> <span class="token function">Add</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span> ans <span class="token operator">!=</span> <span class="token number">3</span> <span class="token punctuation">{</span>
-        t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"1 + 2 expected be 3, but %d got"</span><span class="token punctuation">,</span> ans<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">if</span> ans <span class="token operator">:=</span> <span class="token function">Add</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">;</span> ans <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">30</span> <span class="token punctuation">{</span>
-        t<span class="token punctuation">.</span><span class="token function">Errorf</span><span class="token punctuation">(</span><span class="token string">"-10 + -20 expected be -30, but %d got"</span><span class="token punctuation">,</span> ans<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<ul>
-<li>测试用例名称一般命名为 <code>Test</code> 加上待测试的方法名。</li>
-<li>测试用的参数有且只有一个，在这里是 <code>t *testing.T</code>。</li>
-</ul>
-<h1 id="5-单元测试日志级别"><a href="#5-单元测试日志级别" class="headerlink" title="5 单元测试日志级别"></a>5 单元测试日志级别</h1><p>每个测试用例可能并发执行，使用 testing.T 提供的日志输出可以保证日志跟随这个测试上下文一起打印输出。testing.T 提供了几种日志输出方法，详见下表所示。</p>
-<table>
-<thead>
-<tr>
-<th align="center">方  法</th>
-<th>备  注</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Log</td>
-<td>打印日志，同时结束测试</td>
-</tr>
-<tr>
-<td align="center">Logf</td>
-<td>格式化打印日志，同时结束测试</td>
-</tr>
-<tr>
-<td align="center">Error</td>
-<td>打印错误日志，同时结束测试</td>
-</tr>
-<tr>
-<td align="center">Errorf</td>
-<td>格式化打印错误日志，同时结束测试</td>
-</tr>
-<tr>
-<td align="center">Fatal</td>
-<td>打印致命日志，同时结束测试</td>
-</tr>
-<tr>
-<td align="center">Fatalf</td>
-<td>格式化打印致命日志，同时结束测试</td>
-</tr>
-</tbody></table>
-<h1 id="6-单元测试"><a href="#6-单元测试" class="headerlink" title="6 单元测试"></a>6 单元测试</h1><ul>
-<li>测试用例名称一般命名为 <code>Test</code> 加上待测试的方法名。</li>
-<li>测试用的参数有且只有一个，在这里是 <code>t *testing.T</code>。</li>
-</ul>
-<h1 id="7-基准测试"><a href="#7-基准测试" class="headerlink" title="7 基准测试"></a>7 基准测试</h1><p>基准测试(benchmark)的参数是 <code>*testing.B</code>，TestMain 的参数是 <code>*testing.M</code> 类型。</p>
-<p>代码结构</p>
-<pre class="line-numbers language-text"><code class="language-text">example/
-   |--calc.go
-   |--calc_test.go
-   |--benchmark_test.go<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="7-1-代码运行和解释"><a href="#7-1-代码运行和解释" class="headerlink" title="7.1 代码运行和解释"></a>7.1 代码运行和解释</h2><pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">import</span> <span class="token string">"testing"</span>
-
-<span class="token keyword">func</span> <span class="token function">BenchmarkAdd</span><span class="token punctuation">(</span>b <span class="token operator">*</span>testing<span class="token punctuation">.</span>B<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">var</span> n <span class="token builtin">int</span>
-   <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> b<span class="token punctuation">.</span>N<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
-      n<span class="token operator">++</span>
-   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">func</span> <span class="token function">BenchmarkMul</span><span class="token punctuation">(</span>b <span class="token operator">*</span>testing<span class="token punctuation">.</span>B<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   <span class="token keyword">var</span> n <span class="token builtin">int</span>
-   <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> b<span class="token punctuation">.</span>N<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
-      n<span class="token operator">++</span>
-   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-bash"><code class="language-bash">⋊<span class="token operator">></span> ~/g/s/b/testing go <span class="token function">test</span> -v -bench<span class="token operator">=</span>. benchmark_test.go                                                                                                           
-goos: darwin
-goarch: amd64
-BenchmarkAdd
-BenchmarkAdd-12         1000000000               0.263 ns/op
-BenchmarkMul
-BenchmarkMul-12         1000000000               0.255 ns/op
-PASS
-ok      command-line-arguments  0.665s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+                <h1 id="决定因素"><a href="#决定因素" class="headerlink" title="决定因素"></a>决定因素</h1><p>我们评估一下数据库是否需要做水平拆分要考虑的几个要素主要是</p>
 <ol>
-<li><code>-bench=.</code>表示运行 benchmark_test.go 文件里的所有基准测试，和单元测试中的<code>-run</code>类似。</li>
-<li>第5行解释<ol>
-<li>BenchmarkAdd-12 ：显示基准测试名称</li>
-<li>1000000000 ：表示测试的次数，也就是 testing.B 结构中提供给程序使用的 N。</li>
-<li>“0.263 ns/op”表示每一个操作耗费多少时间（纳秒）。</li>
+<li>主库性能：受限于单个主库的CPU/内存/磁盘IOPS的影响，接近或者达到上限后，需要拆分。</li>
+<li>容灾方面：减少单个主库宕机对于写入的影响。</li>
+<li>空间容量：如果你公司的mysql容量比较大，解决了单实例的空间容量限制，但是仍然需要注意特大表的查询性能问题。</li>
 </ol>
-</li>
-<li><code>-benchtime</code>参数可以自定义测试时间</li>
+<h1 id="别的优化方式"><a href="#别的优化方式" class="headerlink" title="别的优化方式"></a>别的优化方式</h1><p>针对以上3点，实际上除了简单的拆分外，我们还需要或者说还可以多考虑一下，有没有更合适的方案</p>
+<ol>
+<li>主库性能：<br>1）可以通过读写分离的方式，降低对于写库的读请求量，<strong>从而提升对于写入的支撑</strong>。<br>2）优化数据写入模型，减少批量写入（削峰），按照我们线上物理机配置，简单的写入模型支撑5k-7k/s的写入。<br>有的业务表比较窄，写入可以达到15-20k/s。</li>
 </ol>
-<p><strong>1</strong> 秒 = <strong>1000000000</strong> 纳秒</p>
-<p>1秒(s) ＝1000毫秒(ms)<br>1毫秒(ms)＝1000微秒 (us)<br>1微秒(us)＝1000纳秒 (ns)</p>
-<p>基准测试报告每一列值对应的含义如下：</p>
-<pre><code>type BenchmarkResult struct &#123;
-    N         int           // 迭代次数
-    T         time.Duration // 基准测试花费的时间
-    Bytes     int64         // 一次迭代处理的字节数
-    MemAllocs uint64        // 总的分配内存的次数
-    MemBytes  uint64        // 总的分配内存的字节数
-&#125;</code></pre><p>如果基准测试需要在并行设置中测试性能，则可以使用 <code>RunParallel</code> 辅助函数 ; 这样的基准测试一般与 <code>go test -cpu</code> 标志一起使用：</p>
-<p>通过 <code>RunParallel</code> 方法能够并行地执行给定的基准测试。<code>RunParallel</code>会创建出多个 goroutine，并将 b.N 分配给这些 goroutine 执行，其中 goroutine 数量的默认值为 GOMAXPROCS。用户如果想要增加非 CPU 受限（non-CPU-bound）基准测试的并行性，那么可以在 <code>RunParallel</code> 之前调用 <code>SetParallelism</code>（如 <code>SetParallelism(2)</code>，则 goroutine 数量为 2*GOMAXPROCS）。<code>RunParallel</code> 通常会与 <code>-cpu</code> 标志一同使用。</p>
-<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">BenchmarkTemplateParallel</span><span class="token punctuation">(</span>b <span class="token operator">*</span>testing<span class="token punctuation">.</span>B<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    templ <span class="token operator">:=</span> template<span class="token punctuation">.</span><span class="token function">Must</span><span class="token punctuation">(</span>template<span class="token punctuation">.</span><span class="token function">New</span><span class="token punctuation">(</span><span class="token string">"test"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Parse</span><span class="token punctuation">(</span><span class="token string">"Hello, {{.}}!"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    b<span class="token punctuation">.</span><span class="token function">RunParallel</span><span class="token punctuation">(</span><span class="token keyword">func</span><span class="token punctuation">(</span>pb <span class="token operator">*</span>testing<span class="token punctuation">.</span>PB<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// 每个 goroutine 有属于自己的 bytes.Buffer.</span>
-        <span class="token keyword">var</span> buf bytes<span class="token punctuation">.</span>Buffer
-        <span class="token keyword">for</span> pb<span class="token punctuation">.</span><span class="token function">Next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// 循环体在所有 goroutine 中总共执行 b.N 次</span>
-            buf<span class="token punctuation">.</span><span class="token function">Reset</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-            templ<span class="token punctuation">.</span><span class="token function">Execute</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>buf<span class="token punctuation">,</span> <span class="token string">"World"</span><span class="token punctuation">)</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-bash"><code class="language-bash">⋊<span class="token operator">></span> ~/g/s/b/testing go <span class="token function">test</span> -v -bench<span class="token operator">=</span>BenchmarkTemplateParallel benchmark_test.go                                                                                   
-goos: darwin
-goarch: amd64
-BenchmarkTemplateParallel
-BenchmarkTemplateParallel-12             5213426               236 ns/op
-PASS
-ok      command-line-arguments  2.687s
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>通过<code>-benchtime</code>参数可以自定义测试时间</p>
-<pre class="line-numbers language-bash"><code class="language-bash">⋊<span class="token operator">></span> ~/g/s/b/testing go <span class="token function">test</span> -v -bench<span class="token operator">=</span>. -benchtime<span class="token operator">=</span>5s benchmark_test.go                                                                                             
-goos: darwin
-goarch: amd64
-BenchmarkAdd
-BenchmarkAdd-12                         1000000000               0.257 ns/op
-BenchmarkMul
-BenchmarkMul-12                         1000000000               0.258 ns/op
-BenchmarkTemplateParallel
-BenchmarkTemplateParallel-12            27029740               228 ns/op
-PASS
-ok      command-line-arguments  8.157s
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-bash"><code class="language-bash">⋊<span class="token operator">></span> ~/g/s/b/testing go <span class="token function">test</span> -v -bench<span class="token operator">=</span>.  benchmark_test.go                                                                                                          
-goos: darwin
-goarch: amd64
-BenchmarkAdd
-BenchmarkAdd-12                         1000000000               0.246 ns/op
-BenchmarkMul
-BenchmarkMul-12                         1000000000               0.255 ns/op
-BenchmarkTemplateParallel
-BenchmarkTemplateParallel-12             4983981               232 ns/op
-BenchmarkFib1
-BenchmarkFib1-12                        731937631                1.66 ns/op
-BenchmarkFib2
-BenchmarkFib2-12                        262092915                4.45 ns/op
-BenchmarkFib3
-BenchmarkFib3-12                        157617190                7.47 ns/op
-BenchmarkFib10
-BenchmarkFib10-12                        4234692               297 ns/op
-BenchmarkFib20
-BenchmarkFib20-12                          34222             35516 ns/op
-BenchmarkFib40
-BenchmarkFib40-12                              2         529998057 ns/op
-PASS
-ok      command-line-arguments  12.166s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-shell"><code class="language-shell">⋊> ~/g/s/b/testing go test -bench=. -run=none -benchmem                                                                                                            15:19:06
-BenchmarkXXX
-goos: darwin
-goarch: amd64
-pkg: basic_go/testing
-BenchmarkXXX-12                         BenchmarkXXX
-BenchmarkXXX
-BenchmarkXXX
-BenchmarkXXX
-BenchmarkXXX
-1000000000               0.000023 ns/op        0 B/op          0 allocs/op
-BenchmarkAdd-12                         1000000000               0.260 ns/op           0 B/op          0 allocs/op
-BenchmarkMul-12                         1000000000               0.259 ns/op           0 B/op          0 allocs/op
-BenchmarkTemplateParallel-12             5424362               236 ns/op             272 B/op          8 allocs/op
-BenchmarkFib1-12                        695810144                1.65 ns/op            0 B/op          0 allocs/op
-BenchmarkFib2-12                        262647230                4.62 ns/op            0 B/op          0 allocs/op
-BenchmarkFib3-12                        153866595                7.74 ns/op            0 B/op          0 allocs/op
-BenchmarkFib10-12                        4036820               315 ns/op               0 B/op          0 allocs/op
-BenchmarkFib20-12                          32605             36246 ns/op               0 B/op          0 allocs/op
-BenchmarkFib40-12                              2         543972525 ns/op               0 B/op          0 allocs/op
-PASS
-ok      basic_go/testing        13.141s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="7-2-分析基准测试数据"><a href="#7-2-分析基准测试数据" class="headerlink" title="7.2 分析基准测试数据"></a>7.2 分析基准测试数据</h2><ul>
-<li>cpu 使用分析：-cpuprofile=cpu.pprof</li>
-<li>内存使用分析：-benchmem -memprofile=mem.pprof</li>
-<li>block分析：-blockprofile=block.pprof</li>
-</ul>
-<p>在配合 pprof 就可以进行分析。</p>
-<p>运行命令采样数据：</p>
-<pre class="line-numbers language-sh"><code class="language-sh">go test -bench=. -run=none -benchmem -memprofile=mem.pprof
-go test -bench=. -run=none -blockprofile=block.pprof
-
-go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="7-3-基准测试原理"><a href="#7-3-基准测试原理" class="headerlink" title="7.3 基准测试原理"></a>7.3 基准测试原理</h2><p>基准测试框架对一个测试用例的默认测试时间是 1 秒。开始测试时，当以 Benchmark 开头的基准测试用例函数返回时还不到 1 秒，那么 testing.B 中的 N 值将按 1、2、5、10、20、50……递增，同时以递增后的值重新调用基准测试用例函数。</p>
-<h1 id="8-参考"><a href="#8-参考" class="headerlink" title="8 参考"></a>8 参考</h1><p><a target="_blank" rel="noopener" href="https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter09/09.0.html">https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter09/09.0.html</a></p>
-<p><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/124.html">http://c.biancheng.net/view/124.html</a></p>
-<p><a target="_blank" rel="noopener" href="https://geektutu.com/post/quick-go-test.html#4-%E5%B8%AE%E5%8A%A9%E5%87%BD%E6%95%B0-helpers">https://geektutu.com/post/quick-go-test.html#4-%E5%B8%AE%E5%8A%A9%E5%87%BD%E6%95%B0-helpers</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiujuan/p/14604609.html">https://www.cnblogs.com/jiujuan/p/14604609.html</a></p>
+<ol start="2">
+<li>容灾方面：<br>1）这个主要要看业务场景，<strong>如果业务对于读高可用要求比较高，一般建议是做读写分离，将重要的请求路由至读库</strong>。读库数量一般会比写库多N个，在代理层面会做容灾的自动切换。<br>2）从集群整体的角度看，分库分表实际上是会扩大故障率的。假设单台物理机的SLA是99.99%则2台物理机的SLA约是99.98%10台物理机的SLA就只剩下99.90%。平均每年的故障时间从52分钟提升到525分钟。由于我们采用的通过代理层转发的方案实现分库分表的路由，在有些场景下单个节点故障可能会导致代理整个不可用，从而放大故障的影响范围。</li>
+</ol>
+<h1 id="分区的必要条件"><a href="#分区的必要条件" class="headerlink" title="分区的必要条件"></a>分区的必要条件</h1><p><strong>按照经验评估，我们的拆分需求主要还是源之于写入能力的要求（比如要求写入tps 10万笔/s 等等）。</strong><br>如果是基于容灾考虑，我们是建议先做上面提供的优化方案<br>1）通过读写分离提升读库的SLA<br>2）减少主库上不必要的读和写，降低故障的概率（物理设备故障无法避免）<br>3）配置HA自动切换，减少故障影响的时间(这个可以单独沟通)</p>
+<p><strong>简而言之，分库分表不是”银弹“，建议先评估清楚后再上船。</strong></p>
+<p>Q: 单表超过10亿条数据，需要分库分表吗？<br>A: 只要业务请求的响应时间满足预期，不需要考虑数量的问题（线上百亿级别的表也不少）</p>
 
             </div>
             <hr/>
@@ -794,7 +541,7 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">wish</a>
+                    <a href="/about" rel="external nofollow noreferrer">希特文</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -804,7 +551,7 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://debug-lixiwen.github.io/2021/07/21/golang-dan-yuan-ce-shi/">https://debug-lixiwen.github.io/2021/07/21/golang-dan-yuan-ce-shi/</a>
+                    <a href="https://debug-lixiwen.github.io/2021/10/04/ru-he-ping-gu-shi-fou-xu-yao-fen-pian-ku/">https://debug-lixiwen.github.io/2021/10/04/ru-he-ping-gu-shi-fou-xu-yao-fen-pian-ku/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -817,7 +564,7 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">wish</a>
+                    <a href="/about" target="_blank">希特文</a>
                     !
                 </span>
             </div>
@@ -842,12 +589,12 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
-                                    <span class="chip bg-color">单元测试</span>
+                                <a href="/tags/MySQL/">
+                                    <span class="chip bg-color">MySQL</span>
                                 </a>
                             
-                                <a href="/tags/golfing/">
-                                    <span class="chip bg-color">golfing</span>
+                                <a href="/tags/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">
+                                    <span class="chip bg-color">分库分表</span>
                                 </a>
                             
                         </div>
@@ -1018,7 +765,7 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
         repo: 'debug-LiXiwen.github.io',
         owner: 'debug-LiXiwen',
         admin: "debug-LiXiwen",
-        id: '2021-07-21T10-51-39',
+        id: '2021-10-04T09-45-09',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -1305,9 +1052,10 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/10/04/ru-he-ping-gu-shi-fou-xu-yao-fen-pian-ku/">
                     <div class="card-image">
@@ -1324,9 +1072,9 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-10-04
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-04
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1339,6 +1087,7 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -1361,35 +1110,47 @@ go test -bench=. -run=none -benchmem -memprofile=mem.pprof -cpuprofile=cpu.pprof
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/07/18/shi-zhan/">
+                <a href="/2021/07/21/golang-dan-yuan-ce-shi/">
                     <div class="card-image">
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="golang的pprof与火焰图实战">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="golang单元测试攻略">
                         
-                        <span class="card-title">golang的pprof与火焰图实战</span>
+                        <span class="card-title">golang单元测试攻略</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            golang的pprof与火焰图实战
+                            golang的单元测试怎么做
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-18
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-21
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/golang/" class="post-category">
-                                    golang
+                            <a href="/categories/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="post-category">
+                                    单元测试
                                 </a>
                             
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/">
+                        <span class="chip bg-color">单元测试</span>
+                    </a>
+                    
+                    <a href="/tags/golfing/">
+                        <span class="chip bg-color">golfing</span>
+                    </a>
+                    
                 </div>
                 
             </div>
