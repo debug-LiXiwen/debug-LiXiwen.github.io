@@ -473,21 +473,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-08-01
+                    2021-11-28
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    9.6k
+                    11.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    38 分
+                    43 分
                 </div>
                 
 
@@ -512,8 +512,12 @@
 <p><a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph/blob/master/README.md">https://github.com/brendangregg/FlameGraph/blob/master/README.md</a></p>
 <p><a target="_blank" rel="noopener" href="https://colobu.com/2017/03/02/a-short-survey-of-golang-pprof/">[鸟窝]-[译] Go 可视化性能分析工具</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiujuan/p/14604609.html">https://www.cnblogs.com/jiujuan/p/14604609.html</a></p>
-<p>代码开发上线步骤</p>
-<ol>
+<h2 id="1-1-性能分析"><a href="#1-1-性能分析" class="headerlink" title="1.1 性能分析"></a>1.1 性能分析</h2><blockquote>
+<p>在软件工程中，性能分析（Performance Analysis，也称为Profiling），是以收集程序运行时信息为手段研究程序行为的分析方法，是一种动态程序分析方法</p>
+<p>–维基百科</p>
+</blockquote>
+<p>在日常开发中，性能优化往往是一个长期的事情，在业务的不同阶段，会遇到各种各样的性能问题，迅速分析并定位程序的性能瓶颈，能让我们付出最小的努力，得到最大的回报。</p>
+<h2 id="1-2-代码开发上线步骤"><a href="#1-2-代码开发上线步骤" class="headerlink" title="1.2 代码开发上线步骤"></a>1.2 代码开发上线步骤</h2><ol>
 <li><p>上线前</p>
 <p>a. 压测：我们通过压测可以获知系统的性能，例如每秒能处理的请求数，平均响应时间，错误率等指标。这样，我们对自己服务的性能算是有个底。</p>
 <p>b. 问题：但是压测是线下的模拟流量，如果到了线上呢？会遇到高并发、大流量，不靠谱的上下游，突发的尖峰流量等等场景，这些都是不可预知的。</p>
@@ -547,7 +551,7 @@
 <li><strong>go dead lock</strong>：死锁的检测分析</li>
 <li><strong>data race detector</strong>：数据竞争分析，其实也与死锁分析有关</li>
 </ol>
-<h2 id="1-2-golang-性能调试优化方法"><a href="#1-2-golang-性能调试优化方法" class="headerlink" title="1.2 golang 性能调试优化方法"></a>1.2 golang 性能调试优化方法</h2><p>比如 linux 中 cpu 性能调试，工具有 top，dstat，perf 等。</p>
+<h2 id="1-3-golang-性能调试优化方法"><a href="#1-3-golang-性能调试优化方法" class="headerlink" title="1.3 golang 性能调试优化方法"></a>1.3 golang 性能调试优化方法</h2><p>比如 linux 中 cpu 性能调试，工具有 top，dstat，perf 等。</p>
 <p>那么在 golang 中，有哪些分析方法？</p>
 <p><strong>golang 性能调试优化方法：</strong></p>
 <ul>
@@ -568,7 +572,9 @@
 <blockquote>
 <p><strong>一句话描述</strong>：Golang<strong>自带</strong>的一款开箱即用的<strong>性能监控</strong>和<strong>分析</strong>工具。</p>
 </blockquote>
-<h1 id="3-pprof-作用"><a href="#3-pprof-作用" class="headerlink" title="3 pprof 作用"></a>3 pprof 作用</h1><p><img src="/2021/07/18/shi-zhan/image-20210725221402477.png" alt="pprof 作用"></p>
+<h1 id="3-pprof-作用"><a href="#3-pprof-作用" class="headerlink" title="3 pprof 作用"></a>3 pprof 作用</h1><p>go的pprof提供了2个工具供我们使用，runtime/pprof中是它的源码，net/http/pprof对源码做了简单封装，能让你在http服务中直接使用。</p>
+<p>它可以采样程序运行时的CPU、堆内存、Goroutine、锁竞争、阻塞调用、系统线程的使用情况。然后通过可视化终端或网页的形式展示给用户，用户可以通过列表、调用图、源码、火焰图、反汇编等视图去展示采集到的性能指标</p>
+<p><img src="https://cdn.jsdelivr.net/gh/debug-LiXiwen/blog_pics/img/image-20211128132832839.png" alt="pprof 作用"></p>
 <h2 id="3-1-pprof指标采样的维度"><a href="#3-1-pprof指标采样的维度" class="headerlink" title="3.1 pprof指标采样的维度"></a>3.1 pprof指标采样的维度</h2><ol>
 <li>CPU（profile）<ol>
 <li>CPU Profiling：CPU 分析，按照一定的频率采集所监听的应用程序 CPU（含寄存器）的使用情况，可确定应用程序在主动消耗 CPU 周期时花费时间的位置。</li>
@@ -601,7 +607,16 @@
 </li>
 <li>执行追踪（trace）：追踪当前应用程序的执行栈</li>
 </ol>
-<h3 id="CPU采样"><a href="#CPU采样" class="headerlink" title="CPU采样"></a>CPU采样</h3><p>采样对象：函数调用和它们的占用时间</p>
+<h2 id="3-2-原理"><a href="#3-2-原理" class="headerlink" title="3.2 原理"></a>3.2 原理</h2><h3 id="3-2-1-CPU采样"><a href="#3-2-1-CPU采样" class="headerlink" title="3.2.1 CPU采样"></a>3.2.1 CPU采样</h3><p>CPU采样会记录所有的调用栈和它们的占用时间。 </p>
+<p>在采样时，进程会每秒暂停一百次，每次会记录当前的调用栈信息。</p>
+<p>汇总之后，根据调用栈在采样中出现的次数来推断函数的运行时间。 你需要手动地启动和停止采样。每秒100次的暂停频率也不能更改。 </p>
+<p>这个定时暂停机制在unix或类unix系统上是依赖信号机制实现的。 </p>
+<p>每次「暂停」都会接收到一个信号，通过系统计时器来保证这个信号是固定频率发送的。 接下来看看具体的流程。</p>
+<p>一共有三个相关角色：进程本身、操作系统和写缓冲。 </p>
+<p>启动采样时，进程向OS注册一个定时器，OS会每隔10ms向进程发送一个SIGPROF信号，进程接收到信号后就会对当前的调用栈进行记录。 </p>
+<p>与此同时，进程会启动一个写缓冲的goroutine，它会每隔100ms从进程中读取已经记录的堆栈信息，并写入到输出流。 </p>
+<p>当采样停止时，进程向OS取消定时器，不再接收信号，写缓冲读取不到新的堆栈时，结束输出。</p>
+<p>采样对象：函数调用和它们的占用时间</p>
 <p>采样率：100次/秒</p>
 <p>固定值采样时间：从手动启动到手动结束</p>
 <ul>
@@ -617,7 +632,12 @@
 
 
 
-<h3 id="Goroutine-amp-ThreadCreate采样"><a href="#Goroutine-amp-ThreadCreate采样" class="headerlink" title="Goroutine &amp; ThreadCreate采样"></a>Goroutine &amp; ThreadCreate采样</h3><p>Goroutine：记录所有用户发起且在运行中的goroutine（即入口非runtime开头的）和runtime.main的调用栈信息</p>
+<h3 id="3-2-2-Goroutine-amp-ThreadCreate采样"><a href="#3-2-2-Goroutine-amp-ThreadCreate采样" class="headerlink" title="3.2.2 Goroutine &amp; ThreadCreate采样"></a>3.2.2 Goroutine &amp; ThreadCreate采样</h3><p>接下来我们来看看goroutine和系统线程的采样。这两个采样指标在概念上和实现上都比较相似，所以在这里进行对比。 </p>
+<p>Goroutine采样会记录所有用户发起，也就是入口不是runtime开头的goroutine，以及main函数所在goroutine的信息和创建这些goroutine的调用栈； </p>
+<p>ThreadCreate采样会记录由程序创建的所有系统线程的信息和调用栈。 </p>
+<p>他们在实现上非常的相似，都是会在STW之后，遍历所有goroutine/所有线程的列表（图中的m就是GMP模型中的m，在golang中和线程一一对应），并输出堆栈，最后Start The World继续运行。</p>
+<p>这个采样是立刻触发的全量记录，你可以通过比较两个时间点的差值来得到某一时间段的指标。</p>
+<p>Goroutine：记录所有用户发起且在运行中的goroutine（即入口非runtime开头的）和runtime.main的调用栈信息</p>
 <p>ThreadCreate：记录程序创建的所有系统线程的信息</p>
 <img src="/2021/07/18/shi-zhan/goroutine&tc.png">
 
@@ -625,12 +645,25 @@
 
 
 
-<h3 id="Heap（堆内存）采样"><a href="#Heap（堆内存）采样" class="headerlink" title="Heap（堆内存）采样"></a>Heap（堆内存）采样</h3><p>采样程序通过内存分配器在<code>堆上</code>分配和释放的内存，记录分配/释放的<code>大小和数量</code></p>
+<h3 id="3-2-3-Heap（堆内存）采样"><a href="#3-2-3-Heap（堆内存）采样" class="headerlink" title="3.2.3 Heap（堆内存）采样"></a>3.2.3 Heap（堆内存）采样</h3><p>接下来看看堆内存采样。 我在提到内存指标的时候说的都是「堆内存」而不是「内存」，这是因为pprof的内存采样是有局限性的。 </p>
+<p>内存采样在实现上依赖了内存分配器的记录，所以它只能记录在堆上分配，且会参与GC的内存，一些其他的内存分配，例如调用结束就会回收的栈内存、一些更底层使用cgo调用分配的内存，是不会被内存采样记录的。 </p>
+<p>它的采样率是一个大小，默认每分配512KB内存会采样一次，采样率是可以在运行开头调整的，设为1则为每次分配都会记录。 </p>
+<p>与CPU和goroutine都不同的是，内存的采样是一个持续的过程，它会记录从程序运行起的所有分配或释放的内存大小和对象数量，并在采样时遍历这些结果进行汇总。 </p>
+<p>还记得刚才的例子中，堆内存采样的四种指标吗？alloc的两项指标是从程序运行开始的累计指标，而inuse的两项指标是通过累计分配减去累计释放得到的程序当前持有的指标。</p>
+<p>你也可以通过比较两次alloc的差值来得到某一段时间程序分配的内存【大小和数量】</p>
+<p>采样程序通过内存分配器在<code>堆上</code>分配和释放的内存，记录分配/释放的<code>大小和数量</code></p>
 <p>采样率：每分配512KB记录一次，可在运行开头修改，1为每次分配均记录</p>
 <p>采样时间：从程序运行开始到采样时</p>
 <p>采样指标：alloc_space, alloc_objects, inuse_space, inuse_objects</p>
 <p>计算方式：inuse=alloc-free</p>
-<h3 id="Block-阻塞-amp-Mutex-锁竞争-采样"><a href="#Block-阻塞-amp-Mutex-锁竞争-采样" class="headerlink" title="Block(阻塞) &amp; Mutex(锁竞争)采样"></a>Block(阻塞) &amp; Mutex(锁竞争)采样</h3><p>阻塞操作</p>
+<h3 id="3-2-4-Block-阻塞-amp-Mutex-锁竞争-采样"><a href="#3-2-4-Block-阻塞-amp-Mutex-锁竞争-采样" class="headerlink" title="3.2.4 Block(阻塞) &amp; Mutex(锁竞争)采样"></a>3.2.4 Block(阻塞) &amp; Mutex(锁竞争)采样</h3><p>讲完了堆内存，还剩下阻塞和锁竞争这两种采样。 这两个指标在流程和原理上也非常相似，我在这里也做了一个对比。 </p>
+<p>这两个采样记录的都是对应操作发生的调用栈、次数和耗时，不过这两个指标的采样率含义并不相同。 </p>
+<p>阻塞操作的采样率是一个「阈值」，消耗超过阈值时间的阻塞操作才会被记录，1为每次操作都会记录。 </p>
+<p>锁竞争的采样率是一个「比例」，运行时会通过随机数来只记录固定比例的锁操作，1为每次操作都会记录。 </p>
+<p>它们在实现上也是基本相同的。都是一个「主动上报」的过程。 </p>
+<p>在阻塞操作或锁操作发生时，会计算出消耗的时间，连同调用栈一起主动上报给采样器，采样器会根据采样率可能会丢弃一些记录。 </p>
+<p>在采样时，采样器会遍历已经记录的信息，统计出具体操作的次数、调用栈和总耗时。和堆内存一样，你可以对比两个时间点的差值计算出段时间内的操作指标。</p>
+<p>阻塞操作</p>
 <p>采样阻塞操作的次数和耗时</p>
 <p>采样率：阻塞耗时超过阈值的才会被记录，1为每次阻塞均记录</p>
 <p>锁竞争</p>
@@ -1213,7 +1246,7 @@ go tool pprof havlak1 havlak1.prof<span aria-hidden="true" class="line-numbers-r
 </tr>
 <tr>
 <td>sum%</td>
-<td>top命令中排在它上面的函数以及本函数flat%之和</td>
+<td>前面所有flat总和，top命令中排在它上面的函数以及本函数flat%之和</td>
 <td>chanrecv：42.18%+30.47% = 72.65%</td>
 </tr>
 <tr>
@@ -1232,6 +1265,8 @@ go tool pprof havlak1 havlak1.prof<span aria-hidden="true" class="line-numbers-r
 <td>-</td>
 </tr>
 </tbody></table>
+<p>什么时候Flat==cum？Flat是当前函数耗时，Cum是当前函数和调用函数累计耗时，他俩相等，代表当前函数没有调用别的函数。</p>
+<p>什么时候Flat==0？函数中只有其它函数的调用。</p>
 <p><code>上面的命令解析</code></p>
 <p>发现do函数有点问题。此时通过命令：<strong>list funcName</strong>，来进行查看具体的位置</p>
 <p><img src="/2021/07/18/shi-zhan/image-20210726104115967.png" alt="web"></p>
@@ -2348,7 +2383,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             <!-- 
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">189.3k</span>&nbsp;字
+                class="white-color">192.7k</span>&nbsp;字
             
             
             

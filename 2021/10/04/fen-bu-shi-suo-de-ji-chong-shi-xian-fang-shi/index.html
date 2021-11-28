@@ -481,21 +481,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-10-05
+                    2021-10-12
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    15.6k
+                    17.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    57 分
+                    63 分
                 </div>
                 
 
@@ -526,10 +526,15 @@
 <li>互斥性:和我们本地锁一样互斥性是最基本，但是分布式锁需要保证在不同节点的不同线程的互斥。</li>
 <li>可重入性:同一个节点上的同一个线程如果获取了锁之后那么也可以再次获取这个锁。（避免死锁）</li>
 <li>锁超时:和本地锁一样支持锁超时，防止死锁。</li>
+<li>分布式锁服务应该是高可用的，而且是需要持久化的。对此，你可以看一下 Redis 的文档 RedLock 看看它是怎么做到高可用的。</li>
 <li>高效，高可用:加锁和解锁需要高效，同时也需要保证高可用防止分布式锁失效，可以增加降级。</li>
 <li>支持阻塞和非阻塞:和ReentrantLock一样支持lock和trylock以及tryLock(long timeOut)。（根据业务需求考虑要不要这条）</li>
 <li>支持公平锁和非公平锁(可选):公平锁的意思是按照请求加锁的顺序获得锁，非公平锁就相反是无序的。这个一般来说实现的比较少。</li>
 </ul>
+<p>安全性（Safety）：在任意时刻，只有一个客户端可以获得锁（排他性）。</p>
+<p>避免死锁：客户端最终一定可以获得锁，即使锁住某个资源的客户端在释放锁之前崩溃或者网络不可达。</p>
+<p>容错性：只要锁服务集群中的大部分节点存活，Client 就可以进行加锁解锁操作。</p>
+<p>分布式锁的特点是，保证在一个集群中，同一个方法在同一时间只能被一台机器上的一个线程执行。这就是所谓的分布式互斥。所以，大家在做某个事的时候，要去一个服务上请求一个标识。如果请求到了，我们就可以操作，操作完后，把这个标识还回去，这样别的进程就可以请求到了。</p>
 <p><img src="/2021/10/04/fen-bu-shi-suo-de-ji-chong-shi-xian-fang-shi/d451355e47a750b127f43ca99506854e.jpg" alt="img"></p>
 <h1 id="三、数据库实现分布式锁"><a href="#三、数据库实现分布式锁" class="headerlink" title="三、数据库实现分布式锁"></a>三、数据库实现分布式锁</h1><h2 id="1-使用数据库表做分布式锁"><a href="#1-使用数据库表做分布式锁" class="headerlink" title="1. 使用数据库表做分布式锁"></a>1. 使用数据库表做分布式锁</h2><p>要实现分布式锁，最简单的方式可能就是直接创建一张锁表，然后通过操作该表中的数据来实现了。</p>
 <p>当我们要锁住某个方法或资源时，我们就在该表中增加一条记录，想要释放锁的时候就删除这条记录。</p>
@@ -776,7 +781,40 @@
 <p>这里使用Lua脚本的方式，尽量保证原子性。</p>
 <p>使用 <code>set key value [EX seconds][PX milliseconds][NX|XX]</code> 命令 看上去很OK，实际上在Redis集群的时候也会出现问题，比如说A客户端在Redis的master节点上拿到了锁，但是这个加锁的key还没有同步到slave节点，master故障，发生故障转移，一个slave节点升级为master节点，B客户端也可以获取同个key的锁，但客户端A也已经拿到锁了，这就导致多个客户端都拿到锁。</p>
 <p>所以针对Redis集群这种情况，还有其他方案。</p>
-<h3 id="3-1-代码执行时间超过锁过期时间"><a href="#3-1-代码执行时间超过锁过期时间" class="headerlink" title="3.1 代码执行时间超过锁过期时间"></a>3.1 代码执行时间超过锁过期时间</h3><h4 id="3-1-1-锁误解除-A线程删除了B线程的锁"><a href="#3-1-1-锁误解除-A线程删除了B线程的锁" class="headerlink" title="3.1.1 锁误解除-A线程删除了B线程的锁"></a>3.1.1 锁误解除-A线程删除了B线程的锁</h4><p>如果线程 A 成功获取到了锁，并且设置了过期时间 30 秒，但线程 A 执行时间超过了 30 秒，锁过期自动释放，此时线程 B 获取到了锁；随后 A 执行完成，线程 A 使用 DEL 命令来释放锁，但此时线程 B 加的锁还没有执行完成，线程 A 实际释放的线程 B 加的锁。</p>
+<h3 id="3-1-代码执行时间超过锁过期时间"><a href="#3-1-代码执行时间超过锁过期时间" class="headerlink" title="3.1 代码执行时间超过锁过期时间"></a>3.1 代码执行时间超过锁过期时间</h3><p>比如一个外部的阻塞调用，或是 CPU 被别的进程吃满，或是不巧碰上了 Full GC，导致 花了超过平时几倍的时间。</p>
+<p>如果 Client A 先取得了锁。</p>
+<p>其它 Client（比如说 Client B）在等待 Client A 的工作完成。</p>
+<p>这个时候，如果 Client A 被挂在了某些事上，比如一个外部的阻塞调用，或是 CPU 被别的进程吃满，或是不巧碰上了 Full GC，导致 Client A 花了超过平时几倍的时间。</p>
+<p>然后，我们的锁服务因为怕死锁，就在一定时间后，把锁给释放掉了。</p>
+<p>此时，Client B 获得了锁并更新了资源。</p>
+<p>这个时候，Client A 服务缓过来了，然后也去更新了资源。于是乎，把 Client B 的更新给冲掉了。</p>
+<p>这就造成了数据出错。</p>
+<p>这听起来挺严重的吧。我画了个图示例一下。</p>
+<p><img src="/2021/10/04/fen-bu-shi-suo-de-ji-chong-shi-xian-fang-shi/937d9975899662d90a96f4cd70580d89.png" alt="img"></p>
+<p>千万不要以为这是脑补出来的案例。其实，这个是真实案例。HBase 就曾经遇到过这样的问题，你可以在他们的 PPT（HBase and HDFS: Understanding FileSystem Usage in HBase）中看到相关的描述。</p>
+<p>要解决这个问题，你需要引入 fence（栅栏）技术。</p>
+<p>一般来说，这就是乐观锁机制，需要一个版本号排它。我们的流程就变成了下图中的这个样子。</p>
+<p><img src="/2021/10/04/fen-bu-shi-suo-de-ji-chong-shi-xian-fang-shi/ce3454e9a8bbfe4628899391c003a5c3.png" alt="img"></p>
+<p>我们从图中可以看到：</p>
+<p>锁服务需要有一个单调递增的版本号。</p>
+<p>写数据的时候，也需要带上自己的版本号。</p>
+<p>数据库服务需要保存数据的版本号，然后对请求做检查。</p>
+<p>如果使用 ZooKeeper 做锁服务的话，那么可以使用 zxid 或 znode 的版本号来做这个 fence 版本号。</p>
+<p>从乐观锁到 CAS</p>
+<p>但是，我们想想，如果数据库中也保留着版本号，那么完全可以用数据库来做这个锁服务，不就更方便了吗？下面的图展示了这个过程。</p>
+<p><img src="/2021/10/04/fen-bu-shi-suo-de-ji-chong-shi-xian-fang-shi/9557fb5b7269eb5d7d53568298803141.png" alt="img"></p>
+<p>使用数据版本（Version）记录机制，即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version” 字段来实现的。</p>
+<p>当读取数据时，将 version 字段的值一同读出，数据每更新一次，对此 version 值加一。当我们提交更新的时候，数据库表对应记录的当前版本信息与第一次取出来的 version 值进行比对。如果数据库表当前版本号与第一次取出来的 version 值相等，则予以更新，否则认为是过期数据。</p>
+<p>更新语句写成 SQL 大概是下面这个样子：</p>
+<p>UPDATE table_name SET xxx = #{xxx}, version=version+1 where version =#{version};</p>
+<p>这不就是乐观锁吗？是的，这是乐观锁最常用的一种实现方式。是的，如果我们使用版本号，或是 fence token 这种方式，就不需要使用分布式锁服务了。</p>
+<p>另外，多说一下。这种 fence token 的玩法，在数据库那边一般会用 timestamp 时间截来玩。也是在更新提交的时候检查当前数据库中数据的时间戳和自己更新前取到的时间戳进行对比，如果一致则 OK，否则就是版本冲突。</p>
+<p>还有，我们有时候都不需要增加额外的版本字段或是 fence token。</p>
+<p>比如，如果想更新库存，我们可以这样操作：</p>
+<p>SELECT stock FROM tb_product where product_id=#{product_id};<br>UPDATE tb_product SET stock=stock-#{num} WHERE product_id=#{product_id} AND stock=#{stock};</p>
+<p>先把库存数量（stock）查出来，然后在更新的时候，检查一下是否是上次读出来的库存。如果不是，说明有别人更新过了，我的 UPDATE 操作就会失败，得重新再来。</p>
+<p>细心的你一定发现了，这不就是计算机汇编指令中的原子操作 CAS（Compare And Swap）嘛，大量无锁的数据结构都需要用到这个。（关于 CAS 的话题，你可以看一下我在 CoolShell 上写的无锁队列的实现 ）。我们一步一步地从分布式锁服务到乐观锁，再到 CAS，你看到了什么？你是否得思考一个有趣的问题——我们还需要分布式锁服务吗？</p>
+<h4 id="3-1-1-锁误解除-A线程删除了B线程的锁"><a href="#3-1-1-锁误解除-A线程删除了B线程的锁" class="headerlink" title="3.1.1 锁误解除-A线程删除了B线程的锁"></a>3.1.1 锁误解除-A线程删除了B线程的锁</h4><p>如果线程 A 成功获取到了锁，并且设置了过期时间 30 秒，但线程 A 执行时间超过了 30 秒，锁过期自动释放，此时线程 B 获取到了锁；随后 A 执行完成，线程 A 使用 DEL 命令来释放锁，但此时线程 B 加的锁还没有执行完成，线程 A 实际释放的线程 B 加的锁。</p>
 <p><img src="/2021/10/04/fen-bu-shi-suo-de-ji-chong-shi-xian-fang-shi/redis-lock-03.png" alt="img"></p>
 <p>通过在 value 中设置当前线程加锁的标识，在删除之前验证 key 对应的 value 判断锁是否是当前线程持有。可生成一个 UUID 标识当前线程，使用 lua 脚本做验证标识和解锁操作。</p>
 <p>这里释放锁使用的是 GET + DEL 两条命令，这时，又会遇到原子性问题了。</p>
@@ -1319,6 +1357,13 @@ PASS<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span
 <li><strong>过期时间评估不好，锁提前过期</strong>：守护线程，自动续期</li>
 <li><strong>锁被别人释放</strong>：锁写入唯一标识，释放锁先检查标识，再释放</li>
 </ul>
+<p><a target="_blank" rel="noopener" href="https://cnhuazhu.top/2021/04/21/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%B9%B6%E5%8F%91%E6%80%A7%EF%BC%9A%E4%BA%92%E6%96%A5%E5%92%8C%E5%90%8C%E6%AD%A5/">操作系统的同步与互斥</a></p>
+<p>加锁其实就是为了互斥，但是我们的业务不是操作系统那样，无法完全保证临界区不被别的线程访问，所以就会出现并发更新的问题。所以对于这种业务场景，既要加锁，又要通过别的方式来处理并发。</p>
+<p>并发更新问题：如果锁服务自动解锁了，新的进程就拿到锁了，但之前的进程以为自己还有锁，那么就出现了两个进程拿到了同一个锁的问题，它们在更新数据的时候就会产生问题。对于这个问题，我想说：</p>
+<p>像 Redis 那样也可以使用 Check and Set 的方式来保证数据的一致性。这就有点像计算机原子指令 CAS（Compare And Swap）一样。就是说，我在改变一个值的时候先检查一下是不是我之前读出来的值，这样来保证其间没有人改过。</p>
+<p>如果通过像 CAS 这样的操作的话，我们还需要分布式锁服务吗？的确是不需要了，不是吗？</p>
+<p>但现实生活中也有不需要更新某个数据的场景，只是为了同步或是互斥一下不同机器上的线程，这时候像 Redis 这样的分布式锁服务就有意义了。</p>
+<p>所以，需要分清楚：我是用来修改某个共享源的，还是用来不同进程间的同步或是互斥的。如果使用 CAS 这样的方式（无锁方式）来更新数据，那么我们是不需要使用分布式锁服务的，而后者可能是需要的。所以，这是我们在决定使用分布式锁服务前需要考虑的第一个问题——我们是否需要？</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903830442737671">基于Redis的分布式锁实现</a></p>
 <p><a target="_blank" rel="noopener" href="https://xiaomi-info.github.io/2019/12/17/redis-distributed-lock/">小米-分布式锁的实现之 redis 篇</a></p>
 <p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903585008861191#heading-7">HollisChuang-分布式锁的几种实现方式~</a></p>
@@ -2138,7 +2183,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             <!-- 
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">189.3k</span>&nbsp;字
+                class="white-color">192.7k</span>&nbsp;字
             
             
             
