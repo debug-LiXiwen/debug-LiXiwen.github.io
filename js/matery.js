@@ -133,6 +133,40 @@ $(function () {
         /* 回到顶部按钮根据滚动条的位置的显示和隐藏.*/
         let scroll = $(window).scrollTop();
         showOrHideNavBg(scroll);
+
+
+        let currentTop = $(window).scrollY() || $(window).scrollTop()
+        let isDown = scrollDirection(currentTop)
+        if (isDown) {
+            $nav.slideDown(300);
+        } else {
+            $nav.slideUp(300);
+        }
+        // if (currentTop > 56) {
+        //     if (isDown) {
+        //       if ($header.classList.contains('nav-visible')) $header.classList.remove('nav-visible')
+        //       if (isChatBtnShow && isChatShow === true) {
+        //         chatBtnHide()
+        //         isChatShow = false
+        //       }
+        //     } else {
+        //       if (!$header.classList.contains('nav-visible')) $header.classList.add('nav-visible')
+        //       if (isChatBtnHide && isChatShow === false) {
+        //         chatBtnShow()
+        //         isChatShow = true
+        //       }
+        //     }
+        //     $header.classList.add('nav-fixed')
+        //     if (window.getComputedStyle($rightside).getPropertyValue('opacity') === '0') {
+        //       $rightside.style.cssText = 'opacity: 0.8; transform: translateX(-58px)'
+        //     }
+        //   } else {
+        //     if (currentTop === 0) {
+        //         $nav.slideUp(300);
+        //     }
+        //     $rightside.style.cssText = "opacity: ''; transform: ''"
+        // }
+
     });
 
     function showOrHideNavBg(position) {
@@ -169,4 +203,57 @@ $(function () {
 
     // 初始化加载 tooltipped.
     $('.tooltipped').tooltip();
+
+    function scrollDirection (currentTop) {
+        const result = currentTop > initTop // true is down & false is up
+        initTop = currentTop
+        return result
+    }
+  
+    let initTop = 0
+
+    function scrollFn () {
+
+        const currentTop = window.scrollY || document.documentElement.scrollTop
+        const isDown = scrollDirection(currentTop)
+
+        window.scrollCollect = () => {
+          return btf.throttle(function (e) {
+            const currentTop = window.scrollY || document.documentElement.scrollTop
+            const isDown = scrollDirection(currentTop)
+            if (currentTop > 56) {
+              if (isDown) {
+                if ($header.classList.contains('nav-visible')) $header.classList.remove('nav-visible')
+                if (isChatBtnShow && isChatShow === true) {
+                  chatBtnHide()
+                  isChatShow = false
+                }
+              } else {
+                if (!$header.classList.contains('nav-visible')) $header.classList.add('nav-visible')
+                if (isChatBtnHide && isChatShow === false) {
+                  chatBtnShow()
+                  isChatShow = true
+                }
+              }
+              $header.classList.add('nav-fixed')
+              if (window.getComputedStyle($rightside).getPropertyValue('opacity') === '0') {
+                $rightside.style.cssText = 'opacity: 0.8; transform: translateX(-58px)'
+              }
+            } else {
+              if (currentTop === 0) {
+                $header.classList.remove('nav-fixed', 'nav-visible')
+              }
+              $rightside.style.cssText = "opacity: ''; transform: ''"
+            }
+    
+            if (document.body.scrollHeight <= innerHeight) {
+              $rightside.style.cssText = 'opacity: 0.8; transform: translateX(-58px)'
+            }
+          }, 200)()
+        }
+    
+        window.addEventListener('scroll', scrollCollect)
+    }
+
+
 });
