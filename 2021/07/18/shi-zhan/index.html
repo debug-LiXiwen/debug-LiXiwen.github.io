@@ -473,7 +473,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-11-28
+                    2022-09-07
                 </div>
                 
 
@@ -1251,12 +1251,12 @@ go tool pprof havlak1 havlak1.prof<span aria-hidden="true" class="line-numbers-r
 </tr>
 <tr>
 <td>cum</td>
-<td>当前函数加上该函数调用之前的累计CPU耗时，该指标包含子函数耗时</td>
+<td>当前函数加上该函数调用其它函数的累计CPU耗时，该指标包含子函数耗时</td>
 <td>chanrecv：8.88+0.54=9.42</td>
 </tr>
 <tr>
 <td>cum%</td>
-<td>当前函数加上该函数调用之前的累计CPU耗时的百分比</td>
+<td>当前函数加上该函数调用其它函数的累计CPU耗时的百分比</td>
 <td>9.42/29.14=32.33%</td>
 </tr>
 <tr>
@@ -1321,7 +1321,10 @@ go tool pprof havlak1 havlak1.prof<span aria-hidden="true" class="line-numbers-r
 <blockquote>
 <p>第一步：进入排除对应的gdb交互。</p>
 </blockquote>
-<pre><code>go tool pprof http://localhost:6060/debug/pprof/&#123;填上你想查看的内容&#125;</code></pre><p>内容关键字：</p>
+<pre><code>go tool pprof http://localhost:6060/debug/pprof/&#123;填上你想查看的内容&#125;?seconds=10</code></pre><ul>
+<li>seconds=10, 采样间隔时间数字</li>
+</ul>
+<p>内容关键字：</p>
 <table>
 <thead>
 <tr>
